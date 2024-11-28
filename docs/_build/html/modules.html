@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Project &#8212; ecommerce_Alawar 11/27/2024 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=e58c2dc4"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="project">
+<h1>Project<a class="headerlink" href="#project" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<section id="customers-db-py">
+<span id="module-Customers.customers_db"></span><h2>customers_db.py<a class="headerlink" href="#customers-db-py" title="Link to this heading">¶</a></h2>
+<p>This module handles all customer-related operations, such as registration, wallet management, and updates.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.charge_customer_wallet">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">charge_customer_wallet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#charge_customer_wallet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.charge_customer_wallet" title="Link to this definition">¶</a></dt>
+<dd><p>Charges a customer’s wallet by adding a specified amount.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The username of the customer.</p></li>
+<li><p><strong>amount</strong> (<em>float</em>) – The amount to add to the wallet.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False if the customer is not found or an error occurs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.connect_to_db">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">connect_to_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#connect_to_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.connect_to_db" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.create_customers_table">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">create_customers_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#create_customers_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.create_customers_table" title="Link to this definition">¶</a></dt>
+<dd><p>Create the Customers table if it does not exist.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.deduct_customer_wallet">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">deduct_customer_wallet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#deduct_customer_wallet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.deduct_customer_wallet" title="Link to this definition">¶</a></dt>
+<dd><p>Deducts a specified amount from a customer’s wallet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The username of the customer.</p></li>
+<li><p><strong>amount</strong> (<em>float</em>) – The amount to deduct from the wallet.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False if the customer is not found, insufficient balance, or an error occurs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.delete_customer">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">delete_customer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#delete_customer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.delete_customer" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes a customer by username.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The username of the customer to delete.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the customer was deleted, False if no customer was found.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.get_all_customers">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">get_all_customers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#get_all_customers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.get_all_customers" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves all customers from the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of dictionaries, each representing a customer.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.get_customer_by_username">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">get_customer_by_username</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#get_customer_by_username"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.get_customer_by_username" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a customer by their username.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The unique username of the customer.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary containing the customer’s details, or None if not found.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.register_customer">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">register_customer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">customer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#register_customer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.register_customer" title="Link to this definition">¶</a></dt>
+<dd><p>Registers a new customer in the Customers table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>customer</strong> (<em>dict</em>) – A dictionary containing customer details.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary containing the inserted customer’s details, or an empty dictionary if an error occurred.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.update_customer">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">update_customer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updates</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#update_customer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.update_customer" title="Link to this definition">¶</a></dt>
+<dd><p>Updates one or more fields of a customer by username.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The username of the customer to update.</p></li>
+<li><p><strong>updates</strong> (<em>dict</em>) – A dictionary containing the fields to update and their new values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the customer was updated, False if no customer was found.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="inventory-db-py">
+<span id="module-Inventory.inventory_db"></span><h2>inventory_db.py<a class="headerlink" href="#inventory-db-py" title="Link to this heading">¶</a></h2>
+<p>This module manages inventory operations, including adding, updating, and deducting stock,
+retrieving product details, and ensuring data consistency.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="Inventory.inventory_db.add_goods">
+<span class="sig-prename descclassname"><span class="pre">Inventory.inventory_db.</span></span><span class="sig-name descname"><span class="pre">add_goods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">goods</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Inventory/inventory_db.html#add_goods"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Inventory.inventory_db.add_goods" title="Link to this definition">¶</a></dt>
+<dd><p>Add a new item to the inventory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>goods</strong> (<em>dict</em>) – A dictionary containing the item’s details, including:
+- name (str): Name of the item.
+- category (str): Category of the item.
+- price_per_item (float): Price per unit of the item.
+- description (str): Description of the item.
+- stock_count (int): Quantity available in stock.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The newly added item’s details, or an empty dictionary if an error occurs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Inventory.inventory_db.connect_to_db">
+<span class="sig-prename descclassname"><span class="pre">Inventory.inventory_db.</span></span><span class="sig-name descname"><span class="pre">connect_to_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Inventory/inventory_db.html#connect_to_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Inventory.inventory_db.connect_to_db" title="Link to this definition">¶</a></dt>
+<dd><p>Connect to the SQLite database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The connection object to the SQLite database.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>sqlite3.Connection</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Inventory.inventory_db.create_inventory_table">
+<span class="sig-prename descclassname"><span class="pre">Inventory.inventory_db.</span></span><span class="sig-name descname"><span class="pre">create_inventory_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Inventory/inventory_db.html#create_inventory_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Inventory.inventory_db.create_inventory_table" title="Link to this definition">¶</a></dt>
+<dd><p>Create the Inventory table if it does not exist.</p>
+<dl class="simple">
+<dt>The table stores the following fields:</dt><dd><ul class="simple">
+<li><p>id: Unique identifier for each item.</p></li>
+<li><p>name: Name of the item.</p></li>
+<li><p>category: Category of the item (‘food’, ‘clothes’, ‘accessories’, ‘electronics’).</p></li>
+<li><p>price_per_item: Price per unit of the item.</p></li>
+<li><p>description: Additional information about the item.</p></li>
+<li><p>stock_count: The quantity of the item available in stock.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Inventory.inventory_db.deduct_goods">
+<span class="sig-prename descclassname"><span class="pre">Inventory.inventory_db.</span></span><span class="sig-name descname"><span class="pre">deduct_goods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Inventory/inventory_db.html#deduct_goods"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Inventory.inventory_db.deduct_goods" title="Link to this definition">¶</a></dt>
+<dd><p>Deduct a specified quantity from an item’s stock.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the item.</p></li>
+<li><p><strong>category</strong> (<em>str</em>) – The category of the item.</p></li>
+<li><p><strong>quantity</strong> (<em>int</em>) – The quantity to deduct.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The updated item’s details if successful, or an error message if not.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Inventory.inventory_db.get_all_goods">
+<span class="sig-prename descclassname"><span class="pre">Inventory.inventory_db.</span></span><span class="sig-name descname"><span class="pre">get_all_goods</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Inventory/inventory_db.html#get_all_goods"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Inventory.inventory_db.get_all_goods" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieve all items in the inventory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of dictionaries, each representing an item.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Inventory.inventory_db.get_good_by_name_and_category">
+<span class="sig-prename descclassname"><span class="pre">Inventory.inventory_db.</span></span><span class="sig-name descname"><span class="pre">get_good_by_name_and_category</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Inventory/inventory_db.html#get_good_by_name_and_category"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Inventory.inventory_db.get_good_by_name_and_category" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieve a specific good by name and category.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the good.</p></li>
+<li><p><strong>category</strong> (<em>str</em>) – The category of the good.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary representing the item if found, or an error message.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Inventory.inventory_db.update_goods">
+<span class="sig-prename descclassname"><span class="pre">Inventory.inventory_db.</span></span><span class="sig-name descname"><span class="pre">update_goods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updates</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Inventory/inventory_db.html#update_goods"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Inventory.inventory_db.update_goods" title="Link to this definition">¶</a></dt>
+<dd><p>Update the details of an item in the inventory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the item.</p></li>
+<li><p><strong>category</strong> (<em>str</em>) – The category of the item.</p></li>
+<li><p><strong>updates</strong> (<em>dict</em>) – A dictionary of fields to update and their new values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The updated item’s details if successful, or an error message if not.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="reviews-db-py">
+<span id="module-Reviews.reviews_db"></span><h2>reviews_db.py<a class="headerlink" href="#reviews-db-py" title="Link to this heading">¶</a></h2>
+<p>This module manages customer reviews, including submitting, updating, deleting, moderating reviews, and retrieving review details.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="Reviews.reviews_db.connect_to_db">
+<span class="sig-prename descclassname"><span class="pre">Reviews.reviews_db.</span></span><span class="sig-name descname"><span class="pre">connect_to_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Reviews/reviews_db.html#connect_to_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Reviews.reviews_db.connect_to_db" title="Link to this definition">¶</a></dt>
+<dd><p>Connect to the SQLite database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A connection object to interact with the database.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>sqlite3.Connection</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Reviews.reviews_db.create_reviews_table">
+<span class="sig-prename descclassname"><span class="pre">Reviews.reviews_db.</span></span><span class="sig-name descname"><span class="pre">create_reviews_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Reviews/reviews_db.html#create_reviews_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Reviews.reviews_db.create_reviews_table" title="Link to this definition">¶</a></dt>
+<dd><p>Create the Reviews table if it does not exist.</p>
+<p>The table stores product reviews, including product name, username, rating, and comments.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Reviews.reviews_db.delete_review">
+<span class="sig-prename descclassname"><span class="pre">Reviews.reviews_db.</span></span><span class="sig-name descname"><span class="pre">delete_review</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">review_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Reviews/reviews_db.html#delete_review"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Reviews.reviews_db.delete_review" title="Link to this definition">¶</a></dt>
+<dd><p>Delete a review by ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>review_id</strong> (<em>int</em>) – The ID of the review to delete.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A success message or an error message.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Reviews.reviews_db.get_customer_reviews">
+<span class="sig-prename descclassname"><span class="pre">Reviews.reviews_db.</span></span><span class="sig-name descname"><span class="pre">get_customer_reviews</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Reviews/reviews_db.html#get_customer_reviews"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Reviews.reviews_db.get_customer_reviews" title="Link to this definition">¶</a></dt>
+<dd><p>Get all reviews submitted by a specific customer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The username of the customer.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of reviews or an error message.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Reviews.reviews_db.get_product_reviews">
+<span class="sig-prename descclassname"><span class="pre">Reviews.reviews_db.</span></span><span class="sig-name descname"><span class="pre">get_product_reviews</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">product_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Reviews/reviews_db.html#get_product_reviews"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Reviews.reviews_db.get_product_reviews" title="Link to this definition">¶</a></dt>
+<dd><p>Get all reviews for a specific product.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>product_name</strong> (<em>str</em>) – The name of the product.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of reviews or an error message.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Reviews.reviews_db.get_review_details">
+<span class="sig-prename descclassname"><span class="pre">Reviews.reviews_db.</span></span><span class="sig-name descname"><span class="pre">get_review_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">review_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Reviews/reviews_db.html#get_review_details"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Reviews.reviews_db.get_review_details" title="Link to this definition">¶</a></dt>
+<dd><p>Get the details of a specific review.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>review_id</strong> (<em>int</em>) – The ID of the review.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary with review details or an error message.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Reviews.reviews_db.moderate_review">
+<span class="sig-prename descclassname"><span class="pre">Reviews.reviews_db.</span></span><span class="sig-name descname"><span class="pre">moderate_review</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">review_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moderated</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Reviews/reviews_db.html#moderate_review"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Reviews.reviews_db.moderate_review" title="Link to this definition">¶</a></dt>
+<dd><p>Moderate a review by updating its status.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>review_id</strong> (<em>int</em>) – The ID of the review to moderate.</p></li>
+<li><p><strong>moderated</strong> (<em>bool</em>) – The moderation status (True for approved, False for flagged).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A success message or an error message.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Reviews.reviews_db.submit_review">
+<span class="sig-prename descclassname"><span class="pre">Reviews.reviews_db.</span></span><span class="sig-name descname"><span class="pre">submit_review</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">product_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rating</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Reviews/reviews_db.html#submit_review"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Reviews.reviews_db.submit_review" title="Link to this definition">¶</a></dt>
+<dd><p>Submit a new review for a product.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>product_name</strong> (<em>str</em>) – The name of the product.</p></li>
+<li><p><strong>username</strong> (<em>str</em>) – The username of the reviewer.</p></li>
+<li><p><strong>rating</strong> (<em>int</em>) – The rating given to the product (1-5).</p></li>
+<li><p><strong>comment</strong> (<em>str</em>) – The review comment.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A success message or an error message.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Reviews.reviews_db.update_review">
+<span class="sig-prename descclassname"><span class="pre">Reviews.reviews_db.</span></span><span class="sig-name descname"><span class="pre">update_review</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">review_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rating</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Reviews/reviews_db.html#update_review"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Reviews.reviews_db.update_review" title="Link to this definition">¶</a></dt>
+<dd><p>Update an existing review.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>review_id</strong> (<em>int</em>) – The ID of the review to update.</p></li>
+<li><p><strong>rating</strong> (<em>int</em>) – The updated rating (1-5).</p></li>
+<li><p><strong>comment</strong> (<em>str</em>) – The updated comment.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A success message or an error message.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Reviews.reviews_db.validate_review_input">
+<span class="sig-prename descclassname"><span class="pre">Reviews.reviews_db.</span></span><span class="sig-name descname"><span class="pre">validate_review_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rating</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Reviews/reviews_db.html#validate_review_input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Reviews.reviews_db.validate_review_input" title="Link to this definition">¶</a></dt>
+<dd><p>Validate the rating value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rating</strong> (<em>int</em>) – The rating value to validate.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the rating is not between 1 and 5.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="sales-db-py">
+<span id="module-Sales.sales_db"></span><h2>sales_db.py<a class="headerlink" href="#sales-db-py" title="Link to this heading">¶</a></h2>
+<p>This module tracks sales operations, manages customer purchases, handles transactions, and saves purchase history for reporting purposes.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="Sales.sales_db.connect_to_db">
+<span class="sig-prename descclassname"><span class="pre">Sales.sales_db.</span></span><span class="sig-name descname"><span class="pre">connect_to_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Sales/sales_db.html#connect_to_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Sales.sales_db.connect_to_db" title="Link to this definition">¶</a></dt>
+<dd><p>Connect to the SQLite database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A connection object to interact with the database.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>sqlite3.Connection</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Sales.sales_db.create_purchase_history_table">
+<span class="sig-prename descclassname"><span class="pre">Sales.sales_db.</span></span><span class="sig-name descname"><span class="pre">create_purchase_history_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Sales/sales_db.html#create_purchase_history_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Sales.sales_db.create_purchase_history_table" title="Link to this definition">¶</a></dt>
+<dd><p>Create the ‘PurchaseHistory’ table if it does not exist.</p>
+<p>This table stores details of purchases made by users, including:
+- <cite>id</cite>: Unique identifier for each purchase record.
+- <cite>username</cite>: The username of the customer making the purchase.
+- <cite>good_name</cite>: The name of the purchased item.
+- <cite>quantity</cite>: The number of items purchased.
+- <cite>total_cost</cite>: The total cost of the purchase.
+- <cite>purchase_date</cite>: The timestamp of the purchase.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Sales.sales_db.save_purchase_history">
+<span class="sig-prename descclassname"><span class="pre">Sales.sales_db.</span></span><span class="sig-name descname"><span class="pre">save_purchase_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">good_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_cost</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Sales/sales_db.html#save_purchase_history"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Sales.sales_db.save_purchase_history" title="Link to this definition">¶</a></dt>
+<dd><p>Save a purchase record to the ‘PurchaseHistory’ table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The username of the customer making the purchase.</p></li>
+<li><p><strong>good_name</strong> (<em>str</em>) – The name of the purchased item.</p></li>
+<li><p><strong>quantity</strong> (<em>int</em>) – The number of items purchased.</p></li>
+<li><p><strong>total_cost</strong> (<em>float</em>) – The total cost of the purchase.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>sqlite3.Error</strong> – If there is an error during the database operation.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>save_purchase_history(“john_doe”, “Laptop”, 1, 1500.0)</p>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ecommerce_Alawar</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="customers_db.html">customers_db</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inventory_db.html">inventory_db</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sales_db.html">sales_db</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reviews_db.html">reviews_db</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Sammy Alawar.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/modules.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

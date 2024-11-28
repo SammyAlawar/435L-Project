@@ -1,0 +1,7 @@
+customers_db
+============
+
+.. automodule:: customers_db
+   :members:
+   :undoc-members:
+   :show-inheritance:

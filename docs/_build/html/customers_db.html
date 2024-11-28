@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>customers_db &#8212; ecommerce_Alawar 11/27/2024 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=e58c2dc4"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="inventory_db" href="inventory_db.html" />
+    <link rel="prev" title="ecommerce_Alawar documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-Customers.customers_db">
+<span id="customers-db"></span><h1>customers_db<a class="headerlink" href="#module-Customers.customers_db" title="Link to this heading">¶</a></h1>
+<section id="customers-db-py">
+<h2>customers_db.py<a class="headerlink" href="#customers-db-py" title="Link to this heading">¶</a></h2>
+<p>This module handles all customer-related operations, such as registration, wallet management, and updates.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.charge_customer_wallet">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">charge_customer_wallet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#charge_customer_wallet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.charge_customer_wallet" title="Link to this definition">¶</a></dt>
+<dd><p>Charges a customer’s wallet by adding a specified amount.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The username of the customer.</p></li>
+<li><p><strong>amount</strong> (<em>float</em>) – The amount to add to the wallet.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False if the customer is not found or an error occurs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.connect_to_db">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">connect_to_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#connect_to_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.connect_to_db" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.create_customers_table">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">create_customers_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#create_customers_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.create_customers_table" title="Link to this definition">¶</a></dt>
+<dd><p>Create the Customers table if it does not exist.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.deduct_customer_wallet">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">deduct_customer_wallet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#deduct_customer_wallet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.deduct_customer_wallet" title="Link to this definition">¶</a></dt>
+<dd><p>Deducts a specified amount from a customer’s wallet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The username of the customer.</p></li>
+<li><p><strong>amount</strong> (<em>float</em>) – The amount to deduct from the wallet.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful, False if the customer is not found, insufficient balance, or an error occurs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.delete_customer">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">delete_customer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#delete_customer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.delete_customer" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes a customer by username.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The username of the customer to delete.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the customer was deleted, False if no customer was found.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.get_all_customers">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">get_all_customers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#get_all_customers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.get_all_customers" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves all customers from the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of dictionaries, each representing a customer.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.get_customer_by_username">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">get_customer_by_username</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#get_customer_by_username"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.get_customer_by_username" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a customer by their username.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The unique username of the customer.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary containing the customer’s details, or None if not found.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.register_customer">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">register_customer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">customer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#register_customer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.register_customer" title="Link to this definition">¶</a></dt>
+<dd><p>Registers a new customer in the Customers table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>customer</strong> (<em>dict</em>) – A dictionary containing customer details.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary containing the inserted customer’s details, or an empty dictionary if an error occurred.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.update_customer">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">update_customer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updates</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#update_customer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.update_customer" title="Link to this definition">¶</a></dt>
+<dd><p>Updates one or more fields of a customer by username.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> (<em>str</em>) – The username of the customer to update.</p></li>
+<li><p><strong>updates</strong> (<em>dict</em>) – A dictionary containing the fields to update and their new values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the customer was updated, False if no customer was found.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ecommerce_Alawar</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">customers_db</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#customers-db-py">customers_db.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Customers.customers_db.charge_customer_wallet"><code class="docutils literal notranslate"><span class="pre">charge_customer_wallet()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Customers.customers_db.connect_to_db"><code class="docutils literal notranslate"><span class="pre">connect_to_db()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Customers.customers_db.create_customers_table"><code class="docutils literal notranslate"><span class="pre">create_customers_table()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Customers.customers_db.deduct_customer_wallet"><code class="docutils literal notranslate"><span class="pre">deduct_customer_wallet()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Customers.customers_db.delete_customer"><code class="docutils literal notranslate"><span class="pre">delete_customer()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Customers.customers_db.get_all_customers"><code class="docutils literal notranslate"><span class="pre">get_all_customers()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Customers.customers_db.get_customer_by_username"><code class="docutils literal notranslate"><span class="pre">get_customer_by_username()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Customers.customers_db.register_customer"><code class="docutils literal notranslate"><span class="pre">register_customer()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Customers.customers_db.update_customer"><code class="docutils literal notranslate"><span class="pre">update_customer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="inventory_db.html">inventory_db</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sales_db.html">sales_db</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reviews_db.html">reviews_db</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">ecommerce_Alawar documentation</a></li>
+      <li>Next: <a href="inventory_db.html" title="next chapter">inventory_db</a></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Sammy Alawar.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.4.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/customers_db.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

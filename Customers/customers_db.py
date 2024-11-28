@@ -1,4 +1,8 @@
-#!/usr/bin/python
+"""
+customers_db.py
+---------------
+This module handles all customer-related operations, such as registration, wallet management, and updates.
+"""
 import sqlite3
 def connect_to_db():
     conn = sqlite3.connect('database.db')
@@ -296,5 +300,33 @@ def deduct_customer_wallet(username, amount):
         print(f"Error deducting wallet: {e}")
         conn.rollback()
         return False
+    finally:
+        conn.close()
+
+def get_customer_wallet(username):
+    """
+    Retrieves the wallet balance of a customer by their username.
+    
+    Args:
+        username (str): The unique username of the customer.
+    
+    Returns:
+        float: The wallet balance of the customer, or None if the customer is not found.
+    """
+    try:
+        conn = connect_to_db()
+        cur = conn.cursor()
+
+        # Fetch the customer's wallet balance
+        cur.execute("SELECT wallet FROM Customers WHERE username = ?", (username,))
+        wallet = cur.fetchone()
+
+        # Check if the customer exists
+        if wallet:
+            return wallet[0]
+        return None
+    except sqlite3.Error as e:
+        print(f"Error fetching wallet balance: {e}")
+        return None
     finally:
         conn.close()

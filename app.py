@@ -8,13 +8,15 @@ from Customers.customers_db import (
     get_all_customers,
     get_customer_by_username,
     charge_customer_wallet,
-    deduct_customer_wallet
+    deduct_customer_wallet,
+    get_customer_wallet
 )
 
 
 # Initialize Flask app
 app = Flask(__name__)
 CORS(app)  # Enable CORS to allow cross-origin requests
+app.config['TESTING'] = True
 
 # Ensure the Customers table exists
 create_customers_table()
@@ -39,16 +41,36 @@ def api_get_customer_by_username(username):
     return jsonify(customer)
 
 # POST: Register a new customer
+# POST: Register a new customer
 @app.route('/customers/register', methods=['POST'])
 def api_register_customer():
     customer = request.get_json()
-    if not customer:
-        return jsonify({"error": "Invalid input"}), 400
+    required_fields = ['full_name', 'username', 'password', 'age', 'address', 'gender', 'marital_status', 'wallet']
+    
+    # Check for missing fields
+    missing_fields = [field for field in required_fields if field not in customer]
+    if missing_fields:
+        return jsonify({"error": f"Missing fields: {', '.join(missing_fields)}"}), 400
+    
+    # Validate age and wallet values
+    if not isinstance(customer.get('age'), int) or customer['age'] <= 0:
+        return jsonify({"error": "Invalid age. Must be a positive integer."}), 400
+    if not isinstance(customer.get('wallet'), (int, float)) or customer['wallet'] < 0:
+        return jsonify({"error": "Invalid wallet value. Must be a non-negative number."}), 400
 
+    # Check if the customer already exists
+    existing_customer = get_customer_by_username(customer.get('username'))
+    if existing_customer:
+        return jsonify({"error": "Customer with this username already exists"}), 409
+
+    # Attempt to register the customer
     registered_customer = register_customer(customer)
     if not registered_customer:
         return jsonify({"error": "Could not register customer"}), 500
+
     return jsonify(registered_customer), 201
+
+
 
 # DELETE: Delete a customer by username
 @app.route('/customers/delete/<string:username>', methods=['DELETE'])
@@ -73,21 +95,36 @@ def api_update_customer(username):
 # POST: Charge customer wallet
 from flask import Flask, request, jsonify
 
-@app.route('/customers/get_customer/<string:username>/charge/<int:amount>', methods=['POST'])
+@app.route('/customers/get_customer/<string:username>/charge/<string:amount>', methods=['POST'])
 def api_charge_wallet(username, amount):
     """
     API to charge a specified amount to a customer's wallet.
     """
+    try:
+        # Convert amount to integer
+        amount = int(amount)
+    except ValueError:
+        return jsonify({"error": "Amount must be a valid integer."}), 400
+
+    # Check if the amount is invalid
     if amount <= 0:
         return jsonify({"error": "Amount must be greater than zero"}), 400
 
+    # Check if the customer exists
+    customer = get_customer_by_username(username)
+    if not customer:
+        return jsonify({"error": "Customer not found"}), 404
+
     # Call the charge_customer_wallet function
     success = charge_customer_wallet(username, amount)
-    
+    wallet = get_customer_wallet(username)
     if not success:
-        return jsonify({"error": "Customer not found or could not charge wallet"}), 404
-    
-    return jsonify({"message": f"Charged ${amount} to '{username}' wallet successfully."})
+        return jsonify({"error": "Could not charge wallet"}), 500
+
+    return jsonify({"message": f"Charged ${amount} to '{username}' wallet successfully. Total Balance: ${wallet}", "wallet": wallet}), 200
+
+
+
 
 
 # POST: Deduct from customer wallet
@@ -100,10 +137,12 @@ def api_deduct_wallet(username, amount):
         return jsonify({"error": "Amount must be greater than zero"}), 400
 
     success = deduct_customer_wallet(username, amount)
+    wallet = get_customer_wallet(username)
+
     if not success:
         return jsonify({"error": "Customer not found, insufficient balance, or could not deduct wallet"}), 400
     
-    return jsonify({"message": f"Deducted ${amount} from '{username}' wallet successfully."})
+    return jsonify({"message": f"Deducted ${amount} from '{username}' wallet successfully. Total Balance: ${wallet}", "wallet": wallet})
 
 
 
@@ -123,14 +162,26 @@ create_inventory_table()
 
 @app.route('/inventory/add_goods', methods=['POST'])
 def api_add_goods():
+    required_fields = ['name', 'category', 'price_per_item', 'description', 'stock_count']
     goods = request.get_json()
-    if not goods:
-        return jsonify({"error": "Invalid input"}), 400
+
+    # Check for missing fields
+    missing_fields = [field for field in required_fields if field not in goods]
+    if missing_fields:
+        return jsonify({"error": f"Missing fields: {', '.join(missing_fields)}"}), 400
+
+    # Validate 'price_per_item' and 'stock_count'
+    if not isinstance(goods.get('stock_count'), int) or goods['stock_count'] < 0:
+        return jsonify({"error": "Invalid stock_count. Must be a non-negative integer."}), 400
+    if not isinstance(goods.get('price_per_item'), (int, float)) or goods['price_per_item'] <= 0:
+        return jsonify({"error": "Invalid price_per_item. Must be a positive number."}), 400
 
     added_goods = add_goods(goods)
     if not added_goods:
         return jsonify({"error": "Could not register goods"}), 500
+
     return jsonify(added_goods), 201
+
 
 @app.route('/inventory/deduct_goods/<string:name>/<string:category>/<int:quantity>', methods=['POST'])
 def api_deduct_goods(name, category, quantity):
@@ -149,7 +200,6 @@ def api_deduct_goods(name, category, quantity):
         return jsonify(result), 400
     return jsonify(result), 200
 
-
 @app.route('/inventory/update_goods/update', methods=['PUT'])
 def api_update_goods():
     """
@@ -165,13 +215,19 @@ def api_update_goods():
     if not name or not category or not updates:
         return jsonify({"error": "Invalid input. Name, category, and updates are required."}), 400
 
+    # Check if the item exists in the inventory
+    existing_good = get_good_by_name_and_category(name, category)
+    if "error" in existing_good:
+        return jsonify({"error": f"Item '{name}' in category '{category}' not found."}), 404
+
     # Call the update_goods function
     result = update_goods(name, category, updates)
 
     # Handle the result
     if "error" in result:
         return jsonify(result), 400
-    return jsonify(result), 200
+
+    return jsonify({"message": "Goods updated successfully", "result": result}), 200
 
 @app.route('/inventory/get_all_goods', methods=['GET'])
 def api_get_all_goods():
@@ -187,6 +243,158 @@ def api_get_good_by_name_and_category(name, category):
     if "error" in good:
         return jsonify(good), 404
     return jsonify(good), 200
+
+
+"""        Sales        """
+from Sales.sales_db import (
+    create_purchase_history_table,
+    save_purchase_history
+)
+
+create_purchase_history_table()
+
+@app.route('/sales/purchase', methods=['POST'])
+def api_make_sale():
+    data = request.get_json()
+
+    # Extract input parameters
+    username = data.get('username')
+    good_name = data.get('good_name')
+    category = data.get('category')
+    quantity = data.get('quantity')
+
+    if not username or not good_name or not category or not quantity:
+        return jsonify({"error": "Invalid input. All fields are required."}), 400
+
+    # Step 1: Check if the customer has enough money
+    customer = get_customer_by_username(username)
+    if 'error' in customer:
+        return jsonify({"error": "Customer not found."}), 404
+
+    good = get_good_by_name_and_category(good_name, category)
+    if 'error' in good:
+        return jsonify({"error": "Good not found."}), 404
+
+    # Check if the customer has enough balance to buy the goods
+    total_cost = good['price_per_item'] * quantity
+    wallet = get_customer_wallet(username)
+    if wallet < total_cost:
+        return jsonify({"error": "Insufficient funds."}), 400
+
+    # Step 2: Check if the good is available in stock
+    if good['stock_count'] < quantity:
+        return jsonify({"error": "Insufficient stock."}), 400
+
+    # Step 3: Process the transaction (deduct wallet and reduce stock)
+    # Deduct the money from customer's wallet
+    success_wallet_deduction = deduct_customer_wallet(username, total_cost)
+    wallet = get_customer_wallet(username)
+    if not success_wallet_deduction:
+        return jsonify({"error": "Error deducting from wallet."}), 500
+    
+    # Update the inventory by deducting the goods
+    result = deduct_goods(good_name, category, quantity)
+    if "error" in result:
+        return jsonify(result), 400
+
+    # Step 4: Save the purchase to the history (You can store this in a database or a file)
+    save_purchase_history(username, good_name, quantity, total_cost)
+
+    return jsonify({"message": f"Purchased {quantity} {good_name}(s) for ${total_cost}. Total Balance: ${wallet}"}), 200
+
+"""        Reviews        """
+
+from Reviews.reviews_db import (
+    create_reviews_table,
+    submit_review,
+    update_review,
+    delete_review,
+    get_product_reviews,
+    get_customer_reviews,
+    moderate_review,
+    get_review_details
+)
+
+create_reviews_table()
+
+@app.route('/reviews/submit', methods=['POST'])
+def api_submit_review():
+    data = request.get_json()
+
+    # Validate input
+    product_name = data.get('product_name')
+    username = data.get('username')
+    rating = data.get('rating')
+    comment = data.get('comment')
+
+    if not product_name or not username or not rating or not (1 <= rating <= 5):
+        return jsonify({"error": "Invalid input. Product name, username, and a valid rating (1-5) are required."}), 400
+
+    # Submit the review
+    submit_review(product_name, username, rating, comment)
+
+    return jsonify({"message": f"Successfully submitted {rating} star review.", "rating": rating}), 201
+
+
+@app.route('/reviews/update/<int:review_id>', methods=['PUT'])
+def api_update_review(review_id):
+    data = request.get_json()
+
+    rating = data.get('rating')
+    comment = data.get('comment')
+
+    if rating < 1 or rating > 5:
+        return jsonify({"error": "Rating must be between 1 and 5."}), 400
+
+    # Call the function to update the review
+    update_review(review_id, rating, comment)
+    return jsonify({"message": "Review updated successfully."}), 200
+
+@app.route('/reviews/delete/<int:review_id>', methods=['DELETE'])
+def api_delete_review(review_id):
+    # Call the function to delete the review
+    delete = delete_review(review_id)
+    if not delete:  # If review doesn't exist
+        return jsonify({"error": "Review doesn't exist"}), 404
+    return jsonify({"message": "Review deleted successfully."}), 200
+
+
+@app.route('/reviews/product/<string:product_name>', methods=['GET'])
+def api_get_product_reviews(product_name):
+    reviews = get_product_reviews(product_name)
+    if not reviews:
+        return jsonify({"message": "No reviews found for this product."}), 404
+    return jsonify(reviews), 200
+
+@app.route('/reviews/customer/<string:username>', methods=['GET'])
+def api_get_customer_reviews(username):
+    reviews = get_customer_reviews(username)
+    if not reviews:
+        return jsonify({"message": "No reviews found for this customer."}), 404
+    return jsonify(reviews), 200
+
+@app.route('/reviews/moderate/<int:review_id>', methods=['PATCH'])
+def api_moderate_review(review_id):
+    data = request.get_json()
+    moderated = data.get('moderated')
+
+    if moderated not in [True, False]:
+        return jsonify({"error": "Invalid moderation status."}), 400
+
+    # Call the function to moderate the review
+    moderate_review(review_id, moderated)
+    return jsonify({"message": "Review moderation updated successfully."}), 200
+
+@app.route('/reviews/details/<int:review_id>', methods=['GET'])
+def api_get_review_details(review_id):
+    review = get_review_details(review_id)
+    if not review:  # If review doesn't exist
+        return jsonify({"error": "Review not found."}), 404
+    return jsonify(review), 200
+
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)
 
 # Run the application
 if __name__ == "__main__":
