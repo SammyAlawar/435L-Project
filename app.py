@@ -643,6 +643,7 @@ def api_get_customer_reviews(username):
 
 @app.route('/reviews/moderate/<int:review_id>', methods=['PATCH'])
 
+@app.route('/reviews/moderate/<int:review_id>', methods=['PATCH'])
 def api_moderate_review(review_id):
     """
     API to moderate a review by toggling its moderation status.
@@ -661,6 +662,18 @@ def api_moderate_review(review_id):
 
     if moderated not in [True, False]:
         return jsonify({"error": "Invalid moderation status."}), 400
+
+    # Fetch the review details using the review_id
+    review = get_review_details(review_id)
+    if not review:
+        return jsonify({"error": "Review not found."}), 404
+
+    comment = review.get('comment', '')
+    banned_words = ["spam", "offensive", "abusive"]
+
+    # Check for inappropriate content in the review comment
+    if any(word in comment.lower() for word in banned_words):
+        return jsonify({"error": "Review contains inappropriate content."}), 400
 
     # Call the function to moderate the review
     moderate_review(review_id, moderated)
