@@ -1,0 +1,221 @@
+2024-11-28 18:54:57,181 INFO [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.18.253:5000
+2024-11-28 18:54:57,181 INFO [33mPress CTRL+C to quit[0m
+2024-11-28 18:54:57,181 INFO  * Restarting with stat
+2024-11-28 18:54:57,398 WARNING  * Debugger is active!
+2024-11-28 18:54:57,399 INFO  * Debugger PIN: 117-957-820
+2024-11-28 18:55:55,545 INFO RESPONSE: POST http://127.0.0.1:5000/login | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 18:55:55,546 INFO 127.0.0.1 - - [28/Nov/2024 18:55:55] "[31m[1mPOST /login HTTP/1.1[0m" 415 -
+2024-11-28 18:56:06,006 INFO REQUEST: POST http://127.0.0.1:5000/login | User: Anonymous | Data: {'username': 'testuser', 'password': 'testpassword'}
+2024-11-28 18:56:06,034 INFO 127.0.0.1 - - [28/Nov/2024 18:56:06] "[35m[1mPOST /login HTTP/1.1[0m" 500 -
+2024-11-28 18:57:15,548 INFO  * Detected change in 'C:\\Users\\sammy\\435L\\Project\\app.py', reloading
+2024-11-28 18:57:15,578 INFO  * Restarting with stat
+2024-11-28 18:57:15,803 WARNING  * Debugger is active!
+2024-11-28 18:57:15,805 INFO  * Debugger PIN: 117-957-820
+2024-11-28 18:58:33,521 INFO REQUEST: POST http://127.0.0.1:5000/customers/get_customer/Slattyyyyyy/charge/-500 | User: Anonymous | Data: {'full_name': 'Sam', 'username': 'sna', 'password': 'securepassword', 'age': 30, 'address': '123 Main Street', 'gender': 'male', 'marital_status': 'single', 'wallet': 50.0}
+2024-11-28 18:58:33,583 INFO 127.0.0.1 - - [28/Nov/2024 18:58:33] "[35m[1mPOST /customers/get_customer/Slattyyyyyy/charge/-500 HTTP/1.1[0m" 500 -
+2024-11-28 18:58:35,120 INFO REQUEST: POST http://127.0.0.1:5000/customers/get_customer/Slattyyyyyy/charge/-500 | User: Anonymous | Data: {'full_name': 'Sam', 'username': 'sna', 'password': 'securepassword', 'age': 30, 'address': '123 Main Street', 'gender': 'male', 'marital_status': 'single', 'wallet': 50.0}
+2024-11-28 18:58:35,143 INFO 127.0.0.1 - - [28/Nov/2024 18:58:35] "[35m[1mPOST /customers/get_customer/Slattyyyyyy/charge/-500 HTTP/1.1[0m" 500 -
+2024-11-28 18:58:37,039 INFO REQUEST: POST http://127.0.0.1:5000/customers/get_customer/Slattyyyyyy/charge/-500 | User: Anonymous | Data: {'full_name': 'Sam', 'username': 'sna', 'password': 'securepassword', 'age': 30, 'address': '123 Main Street', 'gender': 'male', 'marital_status': 'single', 'wallet': 50.0}
+2024-11-28 18:58:37,055 INFO 127.0.0.1 - - [28/Nov/2024 18:58:37] "[35m[1mPOST /customers/get_customer/Slattyyyyyy/charge/-500 HTTP/1.1[0m" 500 -
+2024-11-28 19:00:20,628 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_all_customers | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:00:20,629 INFO 127.0.0.1 - - [28/Nov/2024 19:00:20] "[31m[1mGET /customers/get_all_customers HTTP/1.1[0m" 415 -
+2024-11-28 19:00:22,045 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_all_customers | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:00:22,045 INFO 127.0.0.1 - - [28/Nov/2024 19:00:22] "[31m[1mGET /customers/get_all_customers HTTP/1.1[0m" 415 -
+2024-11-28 19:00:24,892 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_all_customers | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:00:24,893 INFO 127.0.0.1 - - [28/Nov/2024 19:00:24] "[31m[1mGET /customers/get_all_customers HTTP/1.1[0m" 415 -
+2024-11-28 19:00:28,211 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_customer/sna | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:00:28,211 INFO 127.0.0.1 - - [28/Nov/2024 19:00:28] "[31m[1mGET /customers/get_customer/sna HTTP/1.1[0m" 415 -
+2024-11-28 19:00:29,451 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_customer/sna | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:00:29,451 INFO 127.0.0.1 - - [28/Nov/2024 19:00:29] "[31m[1mGET /customers/get_customer/sna HTTP/1.1[0m" 415 -
+2024-11-28 19:02:25,390 INFO  * Detected change in 'C:\\Users\\sammy\\435L\\Project\\app.py', reloading
+2024-11-28 19:02:25,414 INFO  * Restarting with stat
+2024-11-28 19:02:25,621 WARNING  * Debugger is active!
+2024-11-28 19:02:25,623 INFO  * Debugger PIN: 117-957-820
+2024-11-28 19:02:30,244 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_customer/sna | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:02:30,244 INFO 127.0.0.1 - - [28/Nov/2024 19:02:30] "[31m[1mGET /customers/get_customer/sna HTTP/1.1[0m" 415 -
+2024-11-28 19:02:33,798 INFO REQUEST: POST http://127.0.0.1:5000/customers/get_customer/Slattyyyyyy/charge/-500 | User: Anonymous | Data: {'full_name': 'Sam', 'username': 'sna', 'password': 'securepassword', 'age': 30, 'address': '123 Main Street', 'gender': 'male', 'marital_status': 'single', 'wallet': 50.0}
+2024-11-28 19:02:33,799 INFO RESPONSE: POST http://127.0.0.1:5000/customers/get_customer/Slattyyyyyy/charge/-500 | User: Anonymous | Status: 400 BAD REQUEST | Data: {
+  "error": "Amount must be greater than zero"
+}
+
+2024-11-28 19:02:33,799 INFO 127.0.0.1 - - [28/Nov/2024 19:02:33] "[31m[1mPOST /customers/get_customer/Slattyyyyyy/charge/-500 HTTP/1.1[0m" 400 -
+2024-11-28 19:02:37,965 INFO REQUEST: POST http://127.0.0.1:5000/inventory/add_goods | User: Anonymous | Data: {'name': 'iPhone 16', 'category': 'electronics', 'price_per_item': 1399.99, 'description': 'smart phone', 'stock_count': 10}
+2024-11-28 19:02:37,986 INFO RESPONSE: POST http://127.0.0.1:5000/inventory/add_goods | User: Anonymous | Status: 201 CREATED | Data: {
+  "category": "electronics",
+  "description": "smart phone",
+  "id": 1,
+  "name": "iphone 16",
+  "price_per_item": 1399.99,
+  "stock_count": 10
+}
+
+2024-11-28 19:02:37,986 INFO 127.0.0.1 - - [28/Nov/2024 19:02:37] "[35m[1mPOST /inventory/add_goods HTTP/1.1[0m" 201 -
+2024-11-28 19:02:44,523 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_customer/Slattyyyyyyy | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:02:44,523 INFO 127.0.0.1 - - [28/Nov/2024 19:02:44] "[31m[1mGET /customers/get_customer/Slattyyyyyyy HTTP/1.1[0m" 415 -
+2024-11-28 19:02:45,695 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_customer/Slattyyyyyyy | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:02:45,696 INFO 127.0.0.1 - - [28/Nov/2024 19:02:45] "[31m[1mGET /customers/get_customer/Slattyyyyyyy HTTP/1.1[0m" 415 -
+2024-11-28 19:02:48,012 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_customer/Slattyyyyyy | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:02:48,012 INFO 127.0.0.1 - - [28/Nov/2024 19:02:48] "[31m[1mGET /customers/get_customer/Slattyyyyyy HTTP/1.1[0m" 415 -
+2024-11-28 19:02:48,785 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_customer/Slattyyyyyy | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:02:48,785 INFO 127.0.0.1 - - [28/Nov/2024 19:02:48] "[31m[1mGET /customers/get_customer/Slattyyyyyy HTTP/1.1[0m" 415 -
+2024-11-28 19:02:51,463 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_customer/Slattyyyyyy | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:02:51,464 INFO 127.0.0.1 - - [28/Nov/2024 19:02:51] "[31m[1mGET /customers/get_customer/Slattyyyyyy HTTP/1.1[0m" 415 -
+2024-11-28 19:02:55,096 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_all_customers | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:02:55,096 INFO 127.0.0.1 - - [28/Nov/2024 19:02:55] "[31m[1mGET /customers/get_all_customers HTTP/1.1[0m" 415 -
+2024-11-28 19:02:55,928 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_all_customers | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:02:55,929 INFO 127.0.0.1 - - [28/Nov/2024 19:02:55] "[31m[1mGET /customers/get_all_customers HTTP/1.1[0m" 415 -
+2024-11-28 19:02:58,651 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_all_customers | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:02:58,651 INFO 127.0.0.1 - - [28/Nov/2024 19:02:58] "[31m[1mGET /customers/get_all_customers HTTP/1.1[0m" 415 -
+2024-11-28 19:06:54,809 INFO  * Detected change in 'C:\\Users\\sammy\\435L\\Project\\app.py', reloading
+2024-11-28 19:06:54,830 INFO  * Restarting with stat
+2024-11-28 19:06:55,050 WARNING  * Debugger is active!
+2024-11-28 19:06:55,052 INFO  * Debugger PIN: 117-957-820
+2024-11-28 19:09:02,922 INFO  * Detected change in 'C:\\Users\\sammy\\435L\\Project\\app.py', reloading
+2024-11-28 19:09:02,943 INFO  * Restarting with stat
+2024-11-28 19:09:03,153 WARNING  * Debugger is active!
+2024-11-28 19:09:03,155 INFO  * Debugger PIN: 117-957-820
+2024-11-28 19:10:32,833 INFO  * Detected change in 'C:\\Users\\sammy\\435L\\Project\\app.py', reloading
+2024-11-28 19:10:32,854 INFO  * Restarting with stat
+2024-11-28 19:10:33,076 WARNING  * Debugger is active!
+2024-11-28 19:10:33,078 INFO  * Debugger PIN: 117-957-820
+2024-11-28 19:10:38,951 INFO REQUEST: POST http://127.0.0.1:5000/customers/get_customer/Slattyyyyyy/charge/-500 | User: Anonymous | Data: {'full_name': 'Sam', 'username': 'sna', 'password': 'securepassword', 'age': 30, 'address': '123 Main Street', 'gender': 'male', 'marital_status': 'single', 'wallet': 50.0}
+2024-11-28 19:10:38,952 INFO RESPONSE: POST http://127.0.0.1:5000/customers/get_customer/Slattyyyyyy/charge/-500 | User: Anonymous | Status: 400 BAD REQUEST | Data: {
+  "error": "Amount must be greater than zero"
+}
+
+2024-11-28 19:10:38,952 INFO 127.0.0.1 - - [28/Nov/2024 19:10:38] "[31m[1mPOST /customers/get_customer/Slattyyyyyy/charge/-500 HTTP/1.1[0m" 400 -
+2024-11-28 19:10:39,888 INFO REQUEST: POST http://127.0.0.1:5000/customers/get_customer/Slattyyyyyy/charge/-500 | User: Anonymous | Data: {'full_name': 'Sam', 'username': 'sna', 'password': 'securepassword', 'age': 30, 'address': '123 Main Street', 'gender': 'male', 'marital_status': 'single', 'wallet': 50.0}
+2024-11-28 19:10:39,888 INFO RESPONSE: POST http://127.0.0.1:5000/customers/get_customer/Slattyyyyyy/charge/-500 | User: Anonymous | Status: 400 BAD REQUEST | Data: {
+  "error": "Amount must be greater than zero"
+}
+
+2024-11-28 19:10:39,889 INFO 127.0.0.1 - - [28/Nov/2024 19:10:39] "[31m[1mPOST /customers/get_customer/Slattyyyyyy/charge/-500 HTTP/1.1[0m" 400 -
+2024-11-28 19:10:41,685 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_customer/Slattyyyyyy | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:10:41,685 INFO 127.0.0.1 - - [28/Nov/2024 19:10:41] "[31m[1mGET /customers/get_customer/Slattyyyyyy HTTP/1.1[0m" 415 -
+2024-11-28 19:10:42,570 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_customer/Slattyyyyyy | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:10:42,570 INFO 127.0.0.1 - - [28/Nov/2024 19:10:42] "[31m[1mGET /customers/get_customer/Slattyyyyyy HTTP/1.1[0m" 415 -
+2024-11-28 19:10:44,599 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_all_customers | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:10:44,599 INFO 127.0.0.1 - - [28/Nov/2024 19:10:44] "[31m[1mGET /customers/get_all_customers HTTP/1.1[0m" 415 -
+2024-11-28 19:10:45,251 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_all_customers | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:10:45,252 INFO 127.0.0.1 - - [28/Nov/2024 19:10:45] "[31m[1mGET /customers/get_all_customers HTTP/1.1[0m" 415 -
+2024-11-28 19:10:45,836 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_all_customers | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:10:45,836 INFO 127.0.0.1 - - [28/Nov/2024 19:10:45] "[31m[1mGET /customers/get_all_customers HTTP/1.1[0m" 415 -
+2024-11-28 19:10:47,446 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_all_customers | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:10:47,446 INFO 127.0.0.1 - - [28/Nov/2024 19:10:47] "[31m[1mGET /customers/get_all_customers HTTP/1.1[0m" 415 -
+2024-11-28 19:10:47,753 INFO RESPONSE: GET http://127.0.0.1:5000/customers/get_all_customers | User: Anonymous | Status: 415 UNSUPPORTED MEDIA TYPE | Data: <!doctype html>
+<html lang=en>
+<title>415 Unsupported Media Type</title>
+<h1>Unsupported Media Type</h1>
+<p>Did not attempt to load JSON data because the request Content-Type was not &#39;application/json&#39;.</p>
+
+2024-11-28 19:10:47,753 INFO 127.0.0.1 - - [28/Nov/2024 19:10:47] "[31m[1mGET /customers/get_all_customers HTTP/1.1[0m" 415 -
+2024-11-28 19:12:12,550 INFO  * Detected change in 'C:\\Users\\sammy\\435L\\Project\\app.py', reloading
+2024-11-28 19:12:12,579 INFO  * Restarting with stat

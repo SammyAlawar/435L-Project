@@ -1,0 +1,14 @@
+# Ignore all __pycache__ directories
+__pycache__/
+venv/
+# Ignore Python compiled files
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore specific directory or subdirectories
+tests/__pycache__/
+
+.DS_Store
+.env
+node_modules/

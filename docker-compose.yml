@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"  # Map port 5000 of the container to port 5000 on the host
+    volumes:
+      - .:/app  # Optional: Mount local code directory into the container for development
+    environment:
+      - FLASK_ENV=development  # Optional: Set Flask environment to development
+      - DATABASE_URL=postgresql://postgres:password@db:5432/mydatabase
+    depends_on:
+      - db  # Ensure the database service starts before the web service
+    command: python app.py  # Command to run the Flask app
+
+  db:
+    image: postgres:13  # Use an official PostgreSQL image
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"  # Map the PostgreSQL port to the host
+
+volumes:
+  db_data:  # Persistent volume for the database
