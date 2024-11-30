@@ -1,4 +1,5 @@
 435L E-Commerce API Project
+
 This project implements a robust E-Commerce API for managing customers, inventory, sales, reviews, and wishlists. It is built as part of the 435L course project.
 
 Features
