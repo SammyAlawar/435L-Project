@@ -39,11 +39,14 @@
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  
 </div>
 <h2 id="A">A</h2>
@@ -51,7 +54,11 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="inventory_db.html#Inventory.inventory_db.add_goods">add_goods() (in module Inventory.inventory_db)</a>, <a href="modules.html#Inventory.inventory_db.add_goods">[1]</a>
 </li>
+      <li><a href="modules.html#Wishlist.wishlist_db.add_to_wishlist">add_to_wishlist() (in module Wishlist.wishlist_db)</a>, <a href="wishlist_db.html#Wishlist.wishlist_db.add_to_wishlist">[1]</a>
+</li>
       <li><a href="app.html#app.api_add_goods">api_add_goods() (in module app)</a>
+</li>
+      <li><a href="app.html#app.api_add_to_wishlist">api_add_to_wishlist() (in module app)</a>
 </li>
       <li><a href="app.html#app.api_charge_wallet">api_charge_wallet() (in module app)</a>
 </li>
@@ -79,11 +86,15 @@
 </li>
       <li><a href="app.html#app.api_get_review_details">api_get_review_details() (in module app)</a>
 </li>
+      <li><a href="app.html#app.api_get_wishlist">api_get_wishlist() (in module app)</a>
+</li>
       <li><a href="app.html#app.api_make_sale">api_make_sale() (in module app)</a>
 </li>
       <li><a href="app.html#app.api_moderate_review">api_moderate_review() (in module app)</a>
 </li>
       <li><a href="app.html#app.api_register_customer">api_register_customer() (in module app)</a>
+</li>
+      <li><a href="app.html#app.api_remove_from_wishlist">api_remove_from_wishlist() (in module app)</a>
 </li>
       <li><a href="app.html#app.api_submit_review">api_submit_review() (in module app)</a>
 </li>
@@ -118,15 +129,17 @@
         <li><a href="modules.html#Sales.sales_db.connect_to_db">(in module Sales.sales_db)</a>, <a href="sales_db.html#Sales.sales_db.connect_to_db">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="customers_db.html#Customers.customers_db.create_customers_table">create_customers_table() (in module Customers.customers_db)</a>, <a href="modules.html#Customers.customers_db.create_customers_table">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="inventory_db.html#Inventory.inventory_db.create_inventory_table">create_inventory_table() (in module Inventory.inventory_db)</a>, <a href="modules.html#Inventory.inventory_db.create_inventory_table">[1]</a>
 </li>
       <li><a href="modules.html#Sales.sales_db.create_purchase_history_table">create_purchase_history_table() (in module Sales.sales_db)</a>, <a href="sales_db.html#Sales.sales_db.create_purchase_history_table">[1]</a>
 </li>
       <li><a href="modules.html#Reviews.reviews_db.create_reviews_table">create_reviews_table() (in module Reviews.reviews_db)</a>, <a href="reviews_db.html#Reviews.reviews_db.create_reviews_table">[1]</a>
+</li>
+      <li><a href="modules.html#Wishlist.wishlist_db.create_wishlist_table">create_wishlist_table() (in module Wishlist.wishlist_db)</a>, <a href="wishlist_db.html#Wishlist.wishlist_db.create_wishlist_table">[1]</a>
 </li>
       <li>
     Customers.customers_db
@@ -163,15 +176,19 @@
 </li>
       <li><a href="customers_db.html#Customers.customers_db.get_customer_by_username">get_customer_by_username() (in module Customers.customers_db)</a>, <a href="modules.html#Customers.customers_db.get_customer_by_username">[1]</a>
 </li>
+      <li><a href="modules.html#Reviews.reviews_db.get_customer_reviews">get_customer_reviews() (in module Reviews.reviews_db)</a>, <a href="reviews_db.html#Reviews.reviews_db.get_customer_reviews">[1]</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules.html#Reviews.reviews_db.get_customer_reviews">get_customer_reviews() (in module Reviews.reviews_db)</a>, <a href="reviews_db.html#Reviews.reviews_db.get_customer_reviews">[1]</a>
+      <li><a href="customers_db.html#Customers.customers_db.get_customer_wallet">get_customer_wallet() (in module Customers.customers_db)</a>, <a href="modules.html#Customers.customers_db.get_customer_wallet">[1]</a>
 </li>
       <li><a href="inventory_db.html#Inventory.inventory_db.get_good_by_name_and_category">get_good_by_name_and_category() (in module Inventory.inventory_db)</a>, <a href="modules.html#Inventory.inventory_db.get_good_by_name_and_category">[1]</a>
 </li>
       <li><a href="modules.html#Reviews.reviews_db.get_product_reviews">get_product_reviews() (in module Reviews.reviews_db)</a>, <a href="reviews_db.html#Reviews.reviews_db.get_product_reviews">[1]</a>
 </li>
       <li><a href="modules.html#Reviews.reviews_db.get_review_details">get_review_details() (in module Reviews.reviews_db)</a>, <a href="reviews_db.html#Reviews.reviews_db.get_review_details">[1]</a>
+</li>
+      <li><a href="modules.html#Wishlist.wishlist_db.get_wishlist">get_wishlist() (in module Wishlist.wishlist_db)</a>, <a href="wishlist_db.html#Wishlist.wishlist_db.get_wishlist">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -187,6 +204,10 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="app.html#app.User.id">id (app.User attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     Inventory.inventory_db
 
@@ -194,6 +215,20 @@
         <li><a href="inventory_db.html#module-Inventory.inventory_db">module</a>, <a href="modules.html#module-Inventory.inventory_db">[1]</a>
 </li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="app.html#app.load_user">load_user() (in module app)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="app.html#app.login">login() (in module app)</a>
+</li>
+      <li><a href="app.html#app.logout">logout() (in module app)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -216,7 +251,21 @@
 </li>
         <li><a href="modules.html#module-Sales.sales_db">Sales.sales_db</a>, <a href="sales_db.html#module-Sales.sales_db">[1]</a>
 </li>
+        <li><a href="modules.html#module-Wishlist.wishlist_db">Wishlist.wishlist_db</a>, <a href="wishlist_db.html#module-Wishlist.wishlist_db">[1]</a>
+</li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="app.html#app.User.password">password (app.User attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="app.html#app.protected">protected() (in module app)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -224,6 +273,8 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="customers_db.html#Customers.customers_db.register_customer">register_customer() (in module Customers.customers_db)</a>, <a href="modules.html#Customers.customers_db.register_customer">[1]</a>
+</li>
+      <li><a href="modules.html#Wishlist.wishlist_db.remove_from_wishlist">remove_from_wishlist() (in module Wishlist.wishlist_db)</a>, <a href="wishlist_db.html#Wishlist.wishlist_db.remove_from_wishlist">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -261,11 +312,15 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="customers_db.html#Customers.customers_db.update_customer">update_customer() (in module Customers.customers_db)</a>, <a href="modules.html#Customers.customers_db.update_customer">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="inventory_db.html#Inventory.inventory_db.update_goods">update_goods() (in module Inventory.inventory_db)</a>, <a href="modules.html#Inventory.inventory_db.update_goods">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#Reviews.reviews_db.update_review">update_review() (in module Reviews.reviews_db)</a>, <a href="reviews_db.html#Reviews.reviews_db.update_review">[1]</a>
+</li>
+      <li><a href="app.html#app.User">User (class in app)</a>
+</li>
+      <li><a href="app.html#app.User.username">username (app.User attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -275,6 +330,19 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules.html#Reviews.reviews_db.validate_review_input">validate_review_input() (in module Reviews.reviews_db)</a>, <a href="reviews_db.html#Reviews.reviews_db.validate_review_input">[1]</a>
 </li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    Wishlist.wishlist_db
+
+      <ul>
+        <li><a href="modules.html#module-Wishlist.wishlist_db">module</a>, <a href="wishlist_db.html#module-Wishlist.wishlist_db">[1]</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -302,6 +370,7 @@
 <li class="toctree-l1"><a class="reference internal" href="inventory_db.html">inventory_db</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sales_db.html">sales_db</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reviews_db.html">reviews_db</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wishlist_db.html">wishlist_db</a></li>
 </ul>
 
 <div class="relations">

@@ -30,8 +30,11 @@
           <div class="body" role="main">
             
   <h1>Source code for app</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span>
+<span></span><span class="kn">from</span> <span class="nn">flask_login</span> <span class="kn">import</span> <span class="n">LoginManager</span><span class="p">,</span> <span class="n">UserMixin</span><span class="p">,</span> <span class="n">login_user</span><span class="p">,</span> <span class="n">logout_user</span><span class="p">,</span> <span class="n">login_required</span><span class="p">,</span> <span class="n">current_user</span>
+<span class="kn">from</span> <span class="nn">flask_bcrypt</span> <span class="kn">import</span> <span class="n">Bcrypt</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span>
 <span class="kn">from</span> <span class="nn">flask_cors</span> <span class="kn">import</span> <span class="n">CORS</span>
+<span class="kn">from</span> <span class="nn">flask_bcrypt</span> <span class="kn">import</span> <span class="n">generate_password_hash</span>
 <span class="kn">from</span> <span class="nn">Customers.customers_db</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">create_customers_table</span><span class="p">,</span>
     <span class="n">register_customer</span><span class="p">,</span>
@@ -40,127 +43,200 @@
     <span class="n">get_all_customers</span><span class="p">,</span>
     <span class="n">get_customer_by_username</span><span class="p">,</span>
     <span class="n">charge_customer_wallet</span><span class="p">,</span>
-    <span class="n">deduct_customer_wallet</span>
+    <span class="n">deduct_customer_wallet</span><span class="p">,</span>
+    <span class="n">get_customer_wallet</span>
 <span class="p">)</span>
-
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
 <span class="c1"># Initialize Flask app</span>
 <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">CORS</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>  <span class="c1"># Enable CORS to allow cross-origin requests</span>
-
-<span class="c1"># Ensure the Customers table exists</span>
-<span class="n">create_customers_table</span><span class="p">()</span>
-
-<span class="c1"># Routes</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;TESTING&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Enable testing mode for easier debugging</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SESSION_COOKIE_HTTPONLY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Ensures cookies are only sent via HTTP(S)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SESSION_COOKIE_SECURE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Change to True if using HTTPS</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SESSION_COOKIE_SAMESITE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Lax&#39;</span>
 <div class="viewcode-block" id="home">
 <a class="viewcode-back" href="../app.html#app.home">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">home</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Default route that returns a welcome message for authenticated users.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON welcome message.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Welcome to the Customer Management API!&quot;</span><span class="p">})</span></div>
 
 
-<span class="c1"># GET: Retrieve all customers</span>
+<span class="n">create_customers_table</span><span class="p">()</span>
 <div class="viewcode-block" id="api_get_all_customers">
 <a class="viewcode-back" href="../app.html#app.api_get_all_customers">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/customers/get_all_customers&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">api_get_all_customers</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves all customers from the database.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON list of all customers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">customers</span> <span class="o">=</span> <span class="n">get_all_customers</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">customers</span><span class="p">)</span></div>
 
 
-<span class="c1"># GET: Retrieve a customer by username</span>
 <div class="viewcode-block" id="api_get_customer_by_username">
 <a class="viewcode-back" href="../app.html#app.api_get_customer_by_username">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/customers/get_customer/&lt;string:username&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">api_get_customer_by_username</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves a specific customer by their username.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        username (str): The username of the customer.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON object of the customer or error message.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">customer</span> <span class="o">=</span> <span class="n">get_customer_by_username</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">customer</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Customer not found&quot;</span><span class="p">}),</span> <span class="mi">404</span>
     <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">customer</span><span class="p">)</span></div>
 
 
-<span class="c1"># POST: Register a new customer</span>
 <div class="viewcode-block" id="api_register_customer">
 <a class="viewcode-back" href="../app.html#app.api_register_customer">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/customers/register&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">api_register_customer</span><span class="p">():</span>
-    <span class="n">customer</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">customer</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid input&quot;</span><span class="p">}),</span> <span class="mi">400</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Registers a new customer in the database.</span>
 
+<span class="sd">    Request JSON:</span>
+<span class="sd">    - full_name (str)</span>
+<span class="sd">    - username (str)</span>
+<span class="sd">    - password (str)</span>
+<span class="sd">    - age (int)</span>
+<span class="sd">    - address (str)</span>
+<span class="sd">    - gender (str)</span>
+<span class="sd">    - marital_status (str)</span>
+<span class="sd">    - wallet (float)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON object of the registered customer or error message.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">customer</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="n">required_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;full_name&#39;</span><span class="p">,</span> <span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;address&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="s1">&#39;marital_status&#39;</span><span class="p">,</span> <span class="s1">&#39;wallet&#39;</span><span class="p">]</span>
+    <span class="n">missing_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">required_fields</span> <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">customer</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">missing_fields</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Missing fields: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing_fields</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}),</span> <span class="mi">400</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">customer</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;age&#39;</span><span class="p">),</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">customer</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid age. Must be a positive integer.&quot;</span><span class="p">}),</span> <span class="mi">400</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">customer</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wallet&#39;</span><span class="p">),</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="n">customer</span><span class="p">[</span><span class="s1">&#39;wallet&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid wallet value. Must be a non-negative number.&quot;</span><span class="p">}),</span> <span class="mi">400</span>
+    <span class="n">existing_customer</span> <span class="o">=</span> <span class="n">get_customer_by_username</span><span class="p">(</span><span class="n">customer</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">existing_customer</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Customer with this username already exists&quot;</span><span class="p">}),</span> <span class="mi">409</span>
+    <span class="n">customer</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bcrypt</span><span class="o">.</span><span class="n">generate_password_hash</span><span class="p">(</span><span class="n">customer</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
     <span class="n">registered_customer</span> <span class="o">=</span> <span class="n">register_customer</span><span class="p">(</span><span class="n">customer</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">registered_customer</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Could not register customer&quot;</span><span class="p">}),</span> <span class="mi">500</span>
     <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">registered_customer</span><span class="p">),</span> <span class="mi">201</span></div>
 
 
-<span class="c1"># DELETE: Delete a customer by username</span>
 <div class="viewcode-block" id="api_delete_customer">
 <a class="viewcode-back" href="../app.html#app.api_delete_customer">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/customers/delete/&lt;string:username&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;DELETE&#39;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">api_delete_customer</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes a customer from the database by their username.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        username (str): The username of the customer.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON message indicating success or failure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">success</span> <span class="o">=</span> <span class="n">delete_customer</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Customer not found&quot;</span><span class="p">}),</span> <span class="mi">404</span>
     <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Customer &#39;</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">&#39; deleted successfully.&quot;</span><span class="p">})</span></div>
 
 
-<span class="c1"># PUT: Update a customer&#39;s information</span>
 <div class="viewcode-block" id="api_update_customer">
 <a class="viewcode-back" href="../app.html#app.api_update_customer">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/customers/update/&lt;string:username&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;PUT&#39;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">api_update_customer</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Updates a customer&#39;s details.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        username (str): The username of the customer.</span>
+
+<span class="sd">    Request JSON:</span>
+<span class="sd">    - Fields to update.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON message indicating success or failure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">updates</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">updates</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid input&quot;</span><span class="p">}),</span> <span class="mi">400</span>
-
     <span class="n">success</span> <span class="o">=</span> <span class="n">update_customer</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">updates</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Customer not found&quot;</span><span class="p">}),</span> <span class="mi">404</span>
     <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Customer &#39;</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">&#39; updated successfully.&quot;</span><span class="p">})</span></div>
 
 
-<span class="c1"># POST: Charge customer wallet</span>
-<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span>
-
 <div class="viewcode-block" id="api_charge_wallet">
 <a class="viewcode-back" href="../app.html#app.api_charge_wallet">[docs]</a>
-<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/customers/get_customer/&lt;string:username&gt;/charge/&lt;int:amount&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/customers/get_customer/&lt;string:username&gt;/charge/&lt;string:amount&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">api_charge_wallet</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">amount</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    API to charge a specified amount to a customer&#39;s wallet.</span>
+<span class="sd">    Charges a specified amount to a customer&#39;s wallet.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        username (str): The username of the customer.</span>
+<span class="sd">        amount (str): The amount to charge.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON message indicating success or failure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">amount</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Amount must be a valid integer.&quot;</span><span class="p">}),</span> <span class="mi">400</span>
     <span class="k">if</span> <span class="n">amount</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Amount must be greater than zero&quot;</span><span class="p">}),</span> <span class="mi">400</span>
-
-    <span class="c1"># Call the charge_customer_wallet function</span>
+    <span class="n">customer</span> <span class="o">=</span> <span class="n">get_customer_by_username</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">customer</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Customer not found&quot;</span><span class="p">}),</span> <span class="mi">404</span>
     <span class="n">success</span> <span class="o">=</span> <span class="n">charge_customer_wallet</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">amount</span><span class="p">)</span>
-    
+    <span class="n">wallet</span> <span class="o">=</span> <span class="n">get_customer_wallet</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Customer not found or could not charge wallet&quot;</span><span class="p">}),</span> <span class="mi">404</span>
-    
-    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Charged $</span><span class="si">{</span><span class="n">amount</span><span class="si">}</span><span class="s2"> to &#39;</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">&#39; wallet successfully.&quot;</span><span class="p">})</span></div>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Could not charge wallet&quot;</span><span class="p">}),</span> <span class="mi">500</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Charged $</span><span class="si">{</span><span class="n">amount</span><span class="si">}</span><span class="s2"> to &#39;</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">&#39; wallet successfully. Total Balance: $</span><span class="si">{</span><span class="n">wallet</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;wallet&quot;</span><span class="p">:</span> <span class="n">wallet</span><span class="p">}),</span> <span class="mi">200</span></div>
 
 
-
-<span class="c1"># POST: Deduct from customer wallet</span>
 <div class="viewcode-block" id="api_deduct_wallet">
 <a class="viewcode-back" href="../app.html#app.api_deduct_wallet">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/customers/get_customer/&lt;string:username&gt;/deduct/&lt;int:amount&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">api_deduct_wallet</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">amount</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    API to deduct a specified amount from a customer&#39;s wallet.</span>
+<span class="sd">    Deducts a specified amount from a customer&#39;s wallet.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        username (str): The username of the customer.</span>
+<span class="sd">        amount (int): The amount to deduct.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON message indicating success or failure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">amount</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Amount must be greater than zero&quot;</span><span class="p">}),</span> <span class="mi">400</span>
-
     <span class="n">success</span> <span class="o">=</span> <span class="n">deduct_customer_wallet</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">amount</span><span class="p">)</span>
+    <span class="n">wallet</span> <span class="o">=</span> <span class="n">get_customer_wallet</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Customer not found, insufficient balance, or could not deduct wallet&quot;</span><span class="p">}),</span> <span class="mi">400</span>
-    
-    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Deducted $</span><span class="si">{</span><span class="n">amount</span><span class="si">}</span><span class="s2"> from &#39;</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">&#39; wallet successfully.&quot;</span><span class="p">})</span></div>
-
-
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Deducted $</span><span class="si">{</span><span class="n">amount</span><span class="si">}</span><span class="s2"> from &#39;</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">&#39; wallet successfully. Total Balance: $</span><span class="si">{</span><span class="n">wallet</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;wallet&quot;</span><span class="p">:</span> <span class="n">wallet</span><span class="p">})</span></div>
 
 
 
@@ -175,19 +251,44 @@
     <span class="n">get_good_by_name_and_category</span>
 <span class="p">)</span>
 
+<span class="c1"># Ensure the Inventory table exists</span>
 <span class="n">create_inventory_table</span><span class="p">()</span>
 
 <div class="viewcode-block" id="api_add_goods">
 <a class="viewcode-back" href="../app.html#app.api_add_goods">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/inventory/add_goods&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">api_add_goods</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    API to add new goods to the inventory.</span>
+
+<span class="sd">    Request JSON:</span>
+<span class="sd">    - name (str): Name of the product.</span>
+<span class="sd">    - category (str): Category of the product.</span>
+<span class="sd">    - price_per_item (float): Price per item of the product.</span>
+<span class="sd">    - description (str): Description of the product.</span>
+<span class="sd">    - stock_count (int): Quantity of the product in stock.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON object with details of the added goods or an error message.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">required_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="s1">&#39;price_per_item&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;stock_count&#39;</span><span class="p">]</span>
     <span class="n">goods</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">goods</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid input&quot;</span><span class="p">}),</span> <span class="mi">400</span>
+
+    <span class="c1"># Check for missing fields</span>
+    <span class="n">missing_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">required_fields</span> <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">goods</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">missing_fields</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Missing fields: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing_fields</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}),</span> <span class="mi">400</span>
+
+    <span class="c1"># Validate &#39;price_per_item&#39; and &#39;stock_count&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">goods</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;stock_count&#39;</span><span class="p">),</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">goods</span><span class="p">[</span><span class="s1">&#39;stock_count&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid stock_count. Must be a non-negative integer.&quot;</span><span class="p">}),</span> <span class="mi">400</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">goods</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;price_per_item&#39;</span><span class="p">),</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="n">goods</span><span class="p">[</span><span class="s1">&#39;price_per_item&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid price_per_item. Must be a positive number.&quot;</span><span class="p">}),</span> <span class="mi">400</span>
 
     <span class="n">added_goods</span> <span class="o">=</span> <span class="n">add_goods</span><span class="p">(</span><span class="n">goods</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">added_goods</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Could not register goods&quot;</span><span class="p">}),</span> <span class="mi">500</span>
+
     <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">added_goods</span><span class="p">),</span> <span class="mi">201</span></div>
 
 
@@ -197,6 +298,14 @@
 <span class="k">def</span> <span class="nf">api_deduct_goods</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">quantity</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    API to deduct a quantity from an item&#39;s stock in the inventory.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name (str): Name of the product.</span>
+<span class="sd">        category (str): Category of the product.</span>
+<span class="sd">        quantity (int): Quantity to deduct from stock.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON object with success message or error details.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Validate input</span>
     <span class="k">if</span> <span class="n">quantity</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
@@ -211,13 +320,20 @@
     <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span><span class="p">),</span> <span class="mi">200</span></div>
 
 
-
 <div class="viewcode-block" id="api_update_goods">
 <a class="viewcode-back" href="../app.html#app.api_update_goods">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/inventory/update_goods/update&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;PUT&#39;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">api_update_goods</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    API to update fields of an item in the inventory.</span>
+
+<span class="sd">    Request JSON:</span>
+<span class="sd">    - name (str): Name of the product.</span>
+<span class="sd">    - category (str): Category of the product.</span>
+<span class="sd">    - updates (dict): Dictionary containing the fields to update.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON message indicating success or failure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
 
@@ -229,19 +345,31 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">category</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">updates</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid input. Name, category, and updates are required.&quot;</span><span class="p">}),</span> <span class="mi">400</span>
 
+    <span class="c1"># Check if the item exists in the inventory</span>
+    <span class="n">existing_good</span> <span class="o">=</span> <span class="n">get_good_by_name_and_category</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">category</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;error&quot;</span> <span class="ow">in</span> <span class="n">existing_good</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Item &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; in category &#39;</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">&#39; not found.&quot;</span><span class="p">}),</span> <span class="mi">404</span>
+
     <span class="c1"># Call the update_goods function</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">update_goods</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">updates</span><span class="p">)</span>
 
     <span class="c1"># Handle the result</span>
     <span class="k">if</span> <span class="s2">&quot;error&quot;</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span><span class="p">),</span> <span class="mi">400</span>
-    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span><span class="p">),</span> <span class="mi">200</span></div>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Goods updated successfully&quot;</span><span class="p">,</span> <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">}),</span> <span class="mi">200</span></div>
 
 
 <div class="viewcode-block" id="api_get_all_goods">
 <a class="viewcode-back" href="../app.html#app.api_get_all_goods">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/inventory/get_all_goods&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">api_get_all_goods</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    API to retrieve all goods from the inventory.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON list of all goods.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">goods</span> <span class="o">=</span> <span class="n">get_all_goods</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">goods</span><span class="p">),</span> <span class="mi">200</span></div>
 
@@ -249,9 +377,17 @@
 <div class="viewcode-block" id="api_get_good_by_name_and_category">
 <a class="viewcode-back" href="../app.html#app.api_get_good_by_name_and_category">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/inventory/get_goods/&lt;string:name&gt;/&lt;string:category&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+
 <span class="k">def</span> <span class="nf">api_get_good_by_name_and_category</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">category</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    API to retrieve a specific good by name and category.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name (str): Name of the product.</span>
+<span class="sd">        category (str): Category of the product.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON object of the good or error message.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">good</span> <span class="o">=</span> <span class="n">get_good_by_name_and_category</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">category</span><span class="p">)</span>
     <span class="k">if</span> <span class="s2">&quot;error&quot;</span> <span class="ow">in</span> <span class="n">good</span><span class="p">:</span>
@@ -266,12 +402,26 @@
     <span class="n">save_purchase_history</span>
 <span class="p">)</span>
 
+<span class="c1"># Ensure the Sales table exists</span>
 <span class="n">create_purchase_history_table</span><span class="p">()</span>
 
 <div class="viewcode-block" id="api_make_sale">
 <a class="viewcode-back" href="../app.html#app.api_make_sale">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/sales/purchase&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+
 <span class="k">def</span> <span class="nf">api_make_sale</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    API to process a sale by deducting customer funds and inventory stock.</span>
+
+<span class="sd">    Request JSON:</span>
+<span class="sd">    - username (str): Username of the customer making the purchase.</span>
+<span class="sd">    - good_name (str): Name of the product being purchased.</span>
+<span class="sd">    - category (str): Category of the product.</span>
+<span class="sd">    - quantity (int): Quantity of the product being purchased.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON object indicating success or error details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
 
     <span class="c1"># Extract input parameters</span>
@@ -280,6 +430,7 @@
     <span class="n">category</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>
     <span class="n">quantity</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quantity&#39;</span><span class="p">)</span>
 
+    <span class="c1"># Validate input</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">username</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">good_name</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">category</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">quantity</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid input. All fields are required.&quot;</span><span class="p">}),</span> <span class="mi">400</span>
 
@@ -294,7 +445,8 @@
 
     <span class="c1"># Check if the customer has enough balance to buy the goods</span>
     <span class="n">total_cost</span> <span class="o">=</span> <span class="n">good</span><span class="p">[</span><span class="s1">&#39;price_per_item&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">quantity</span>
-    <span class="k">if</span> <span class="n">customer</span><span class="p">[</span><span class="s1">&#39;wallet&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">total_cost</span><span class="p">:</span>
+    <span class="n">wallet</span> <span class="o">=</span> <span class="n">get_customer_wallet</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">wallet</span> <span class="o">&lt;</span> <span class="n">total_cost</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Insufficient funds.&quot;</span><span class="p">}),</span> <span class="mi">400</span>
 
     <span class="c1"># Step 2: Check if the good is available in stock</span>
@@ -302,21 +454,21 @@
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Insufficient stock.&quot;</span><span class="p">}),</span> <span class="mi">400</span>
 
     <span class="c1"># Step 3: Process the transaction (deduct wallet and reduce stock)</span>
-    <span class="c1"># Deduct the money from customer&#39;s wallet</span>
-    <span class="n">new_wallet_balance</span> <span class="o">=</span> <span class="n">customer</span><span class="p">[</span><span class="s1">&#39;wallet&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">total_cost</span>
     <span class="n">success_wallet_deduction</span> <span class="o">=</span> <span class="n">deduct_customer_wallet</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">total_cost</span><span class="p">)</span>
+    <span class="n">wallet</span> <span class="o">=</span> <span class="n">get_customer_wallet</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">success_wallet_deduction</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Error deducting from wallet.&quot;</span><span class="p">}),</span> <span class="mi">500</span>
-
+    
     <span class="c1"># Update the inventory by deducting the goods</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">deduct_goods</span><span class="p">(</span><span class="n">good_name</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">quantity</span><span class="p">)</span>
     <span class="k">if</span> <span class="s2">&quot;error&quot;</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span><span class="p">),</span> <span class="mi">400</span>
 
-    <span class="c1"># Step 4: Save the purchase to the history (You can store this in a database or a file)</span>
+    <span class="c1"># Step 4: Save the purchase to the history</span>
     <span class="n">save_purchase_history</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">good_name</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">total_cost</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Purchased </span><span class="si">{</span><span class="n">quantity</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">good_name</span><span class="si">}</span><span class="s2">(s) for $</span><span class="si">{</span><span class="n">total_cost</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">}),</span> <span class="mi">200</span></div>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Purchased </span><span class="si">{</span><span class="n">quantity</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">good_name</span><span class="si">}</span><span class="s2">(s) for $</span><span class="si">{</span><span class="n">total_cost</span><span class="si">}</span><span class="s2">. Total Balance: $</span><span class="si">{</span><span class="n">wallet</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}),</span> <span class="mi">200</span></div>
+
 
 
 <span class="sd">&quot;&quot;&quot;        Reviews        &quot;&quot;&quot;</span>
@@ -331,60 +483,242 @@
     <span class="n">moderate_review</span><span class="p">,</span>
     <span class="n">get_review_details</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">flask_login</span> <span class="kn">import</span> <span class="n">LoginManager</span><span class="p">,</span> <span class="n">UserMixin</span><span class="p">,</span> <span class="n">login_user</span><span class="p">,</span> <span class="n">logout_user</span><span class="p">,</span> <span class="n">login_required</span><span class="p">,</span> <span class="n">current_user</span>
+<span class="kn">from</span> <span class="nn">flask_bcrypt</span> <span class="kn">import</span> <span class="n">Bcrypt</span>
 
-<span class="n">create_reviews_table</span><span class="p">()</span>
+<span class="c1"># Configure secret key for session management</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SECRET_KEY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;a4d7f5e41f72d5c8b1c5f34a8cb7311c67a23d4e5f6b7c8d9a0e1f2a3b4c5d6e&#39;</span>
+
+<span class="c1"># Initialize LoginManager</span>
+<span class="n">login_manager</span> <span class="o">=</span> <span class="n">LoginManager</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+<span class="n">login_manager</span><span class="o">.</span><span class="n">login_view</span> <span class="o">=</span> <span class="s1">&#39;login&#39;</span>  <span class="c1"># Redirect users to &#39;login&#39; if unauthorized</span>
+
+<span class="c1"># Initialize Bcrypt with your Flask app</span>
+<span class="n">bcrypt</span> <span class="o">=</span> <span class="n">Bcrypt</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+<div class="viewcode-block" id="load_user">
+<a class="viewcode-back" href="../app.html#app.load_user">[docs]</a>
+<span class="nd">@login_manager</span><span class="o">.</span><span class="n">user_loader</span>
+<span class="k">def</span> <span class="nf">load_user</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function is called to load a user by their ID during a session.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        user_id (str): The unique ID of the user.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        User: The User object if the user exists, otherwise None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">get_customer_by_username</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>  <span class="c1"># Fetch user from database</span>
+    <span class="k">if</span> <span class="n">user</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">User</span><span class="p">(</span><span class="n">user</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="n">user</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">],</span> <span class="n">user</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="User">
+<a class="viewcode-back" href="../app.html#app.User">[docs]</a>
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">UserMixin</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a user for Flask-Login.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id (str): The unique ID of the user.</span>
+<span class="sd">        username (str): The username of the user.</span>
+<span class="sd">        password (str): The hashed password of the user.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span></div>
+
+
+
+<div class="viewcode-block" id="login">
+<a class="viewcode-back" href="../app.html#app.login">[docs]</a>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">login</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs in a user by validating their username and password.</span>
+
+<span class="sd">    Request JSON:</span>
+<span class="sd">    - username (str): The username of the user.</span>
+<span class="sd">    - password (str): The plaintext password of the user.</span>
+
+<span class="sd">    Logic:</span>
+<span class="sd">    - Fetch the user from the database using the provided username.</span>
+<span class="sd">    - Compare the provided password with the stored hashed password.</span>
+<span class="sd">    - If valid, log the user in and return a success message.</span>
+<span class="sd">    - If invalid, return an error message.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: A JSON response with a success or error message.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">)</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Fetch the user from the database</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">get_customer_by_username</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid username or password&quot;</span><span class="p">}),</span> <span class="mi">401</span>
+
+    <span class="c1"># Validate the password</span>
+    <span class="k">if</span> <span class="n">bcrypt</span><span class="o">.</span><span class="n">check_password_hash</span><span class="p">(</span><span class="n">user</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">],</span> <span class="n">password</span><span class="p">):</span>
+        <span class="n">login_user</span><span class="p">(</span><span class="n">User</span><span class="p">(</span><span class="n">user</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="n">user</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">],</span> <span class="n">user</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Login successful&quot;</span><span class="p">}),</span> <span class="mi">200</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid username or password&quot;</span><span class="p">}),</span> <span class="mi">401</span></div>
+
+
+<div class="viewcode-block" id="protected">
+<a class="viewcode-back" href="../app.html#app.protected">[docs]</a>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/protected&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">protected</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Hello, </span><span class="si">{</span><span class="n">current_user</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">}),</span> <span class="mi">200</span></div>
+
+
+
+<div class="viewcode-block" id="logout">
+<a class="viewcode-back" href="../app.html#app.logout">[docs]</a>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/logout&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">logout</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Logs out the currently logged-in user.</span>
+
+<span class="sd">    Logic:</span>
+<span class="sd">    - Ends the user session using Flask-Login&#39;s `logout_user` function.</span>
+<span class="sd">    - Returns a success message indicating the user has been logged out.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: A JSON response confirming the logout.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logout_user</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Logged out successfully&quot;</span><span class="p">}),</span> <span class="mi">200</span></div>
+
+
+<span class="kn">from</span> <span class="nn">flask_login</span> <span class="kn">import</span> <span class="n">current_user</span><span class="p">,</span> <span class="n">login_required</span>
 
 <div class="viewcode-block" id="api_submit_review">
 <a class="viewcode-back" href="../app.html#app.api_submit_review">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/reviews/submit&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
 <span class="k">def</span> <span class="nf">api_submit_review</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    API to submit a review for a product. Only authenticated users can submit reviews.</span>
+
+<span class="sd">    Request JSON:</span>
+<span class="sd">    - product_name (str): Name of the product being reviewed.</span>
+<span class="sd">    - username (str): Username of the customer submitting the review.</span>
+<span class="sd">    - rating (int): Rating for the product (1-5).</span>
+<span class="sd">    - comment (str): Optional comment for the review.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON object with success message or error details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
 
+    <span class="c1"># Validate input</span>
     <span class="n">product_name</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;product_name&#39;</span><span class="p">)</span>
-    <span class="n">username</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">)</span>
     <span class="n">rating</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">)</span>
     <span class="n">comment</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">product_name</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">username</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">rating</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Product name, username, and rating are required.&quot;</span><span class="p">}),</span> <span class="mi">400</span>
-    <span class="k">if</span> <span class="n">rating</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">rating</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Rating must be between 1 and 5.&quot;</span><span class="p">}),</span> <span class="mi">400</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">product_name</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">rating</span> <span class="ow">or</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">rating</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid input. Product name and a valid rating (1-5) are required.&quot;</span><span class="p">}),</span> <span class="mi">400</span>
 
-    <span class="c1"># Call the function to submit the review</span>
+    <span class="c1"># Ensure the review is being submitted by the authenticated user</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">username</span>
+
+    <span class="c1"># Submit the review</span>
     <span class="n">submit_review</span><span class="p">(</span><span class="n">product_name</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">rating</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Review submitted successfully.&quot;</span><span class="p">}),</span> <span class="mi">201</span></div>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Successfully submitted </span><span class="si">{</span><span class="n">rating</span><span class="si">}</span><span class="s2"> star review.&quot;</span><span class="p">,</span> <span class="s2">&quot;rating&quot;</span><span class="p">:</span> <span class="n">rating</span><span class="p">}),</span> <span class="mi">201</span></div>
+
 
 
 <div class="viewcode-block" id="api_update_review">
 <a class="viewcode-back" href="../app.html#app.api_update_review">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/reviews/update/&lt;int:review_id&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;PUT&#39;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
 <span class="k">def</span> <span class="nf">api_update_review</span><span class="p">(</span><span class="n">review_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    API to update an existing review. Only the review owner can update the review.</span>
+
+<span class="sd">    Request JSON:</span>
+<span class="sd">    - rating (int): New rating for the product (1-5).</span>
+<span class="sd">    - comment (str): Updated comment for the review.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        review_id (int): ID of the review to update.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON object with success message or error details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
 
     <span class="n">rating</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rating&#39;</span><span class="p">)</span>
     <span class="n">comment</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">rating</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">rating</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">rating</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Rating must be between 1 and 5.&quot;</span><span class="p">}),</span> <span class="mi">400</span>
+
+    <span class="c1"># Check if the review belongs to the current user</span>
+    <span class="n">review</span> <span class="o">=</span> <span class="n">get_review_details</span><span class="p">(</span><span class="n">review_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">review</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Review not found.&quot;</span><span class="p">}),</span> <span class="mi">404</span>
+    <span class="k">if</span> <span class="n">review</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Unauthorized action. You can only update your own reviews.&quot;</span><span class="p">}),</span> <span class="mi">403</span>
 
     <span class="c1"># Call the function to update the review</span>
     <span class="n">update_review</span><span class="p">(</span><span class="n">review_id</span><span class="p">,</span> <span class="n">rating</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Review updated successfully.&quot;</span><span class="p">}),</span> <span class="mi">200</span></div>
 
 
+
 <div class="viewcode-block" id="api_delete_review">
 <a class="viewcode-back" href="../app.html#app.api_delete_review">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/reviews/delete/&lt;int:review_id&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;DELETE&#39;</span><span class="p">])</span>
+<span class="nd">@login_required</span>
 <span class="k">def</span> <span class="nf">api_delete_review</span><span class="p">(</span><span class="n">review_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    API to delete an existing review. Only the review owner can delete the review.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        review_id (int): ID of the review to delete.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON object with success message or error details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check if the review belongs to the current user</span>
+    <span class="n">review</span> <span class="o">=</span> <span class="n">get_review_details</span><span class="p">(</span><span class="n">review_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">review</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Review not found.&quot;</span><span class="p">}),</span> <span class="mi">404</span>
+    <span class="k">if</span> <span class="n">review</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Unauthorized action. You can only delete your own reviews.&quot;</span><span class="p">}),</span> <span class="mi">403</span>
+
     <span class="c1"># Call the function to delete the review</span>
     <span class="n">delete_review</span><span class="p">(</span><span class="n">review_id</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Review deleted successfully.&quot;</span><span class="p">}),</span> <span class="mi">200</span></div>
 
 
+
 <div class="viewcode-block" id="api_get_product_reviews">
 <a class="viewcode-back" href="../app.html#app.api_get_product_reviews">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/reviews/product/&lt;string:product_name&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+
 <span class="k">def</span> <span class="nf">api_get_product_reviews</span><span class="p">(</span><span class="n">product_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    API to retrieve all reviews for a specific product.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        product_name (str): Name of the product.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON object with list of reviews or a message if no reviews are found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">reviews</span> <span class="o">=</span> <span class="n">get_product_reviews</span><span class="p">(</span><span class="n">product_name</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">reviews</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;No reviews found for this product.&quot;</span><span class="p">}),</span> <span class="mi">404</span>
@@ -394,7 +728,17 @@
 <div class="viewcode-block" id="api_get_customer_reviews">
 <a class="viewcode-back" href="../app.html#app.api_get_customer_reviews">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/reviews/customer/&lt;string:username&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+
 <span class="k">def</span> <span class="nf">api_get_customer_reviews</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    API to retrieve all reviews submitted by a specific customer.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        username (str): Username of the customer.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON object with list of reviews or a message if no reviews are found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">reviews</span> <span class="o">=</span> <span class="n">get_customer_reviews</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">reviews</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;No reviews found for this customer.&quot;</span><span class="p">}),</span> <span class="mi">404</span>
@@ -404,7 +748,20 @@
 <div class="viewcode-block" id="api_moderate_review">
 <a class="viewcode-back" href="../app.html#app.api_moderate_review">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/reviews/moderate/&lt;int:review_id&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;PATCH&#39;</span><span class="p">])</span>
+
 <span class="k">def</span> <span class="nf">api_moderate_review</span><span class="p">(</span><span class="n">review_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    API to moderate a review by toggling its moderation status.</span>
+
+<span class="sd">    Request JSON:</span>
+<span class="sd">    - moderated (bool): New moderation status for the review.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        review_id (int): ID of the review to moderate.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON object with success message or error details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
     <span class="n">moderated</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;moderated&#39;</span><span class="p">)</span>
 
@@ -419,19 +776,118 @@
 <div class="viewcode-block" id="api_get_review_details">
 <a class="viewcode-back" href="../app.html#app.api_get_review_details">[docs]</a>
 <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/reviews/details/&lt;int:review_id&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+
 <span class="k">def</span> <span class="nf">api_get_review_details</span><span class="p">(</span><span class="n">review_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    API to retrieve details of a specific review.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        review_id (int): ID of the review.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON object with review details or error message if not found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">review</span> <span class="o">=</span> <span class="n">get_review_details</span><span class="p">(</span><span class="n">review_id</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">review</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Review not found.&quot;</span><span class="p">}),</span> <span class="mi">404</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">review</span><span class="p">:</span>  <span class="c1"># If review doesn&#39;t exist</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Review not found.&quot;</span><span class="p">}),</span> <span class="mi">404</span>
     <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">review</span><span class="p">),</span> <span class="mi">200</span></div>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;        Wishlist        &quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">Wishlist.wishlist_db</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">create_wishlist_table</span><span class="p">,</span>
+    <span class="n">add_to_wishlist</span><span class="p">,</span>
+    <span class="n">remove_from_wishlist</span><span class="p">,</span>
+    <span class="n">get_wishlist</span>
+<span class="p">)</span>
+
+<span class="c1"># Ensure the Wishlist table exists</span>
+<span class="n">create_wishlist_table</span><span class="p">()</span>
+
+<div class="viewcode-block" id="api_add_to_wishlist">
+<a class="viewcode-back" href="../app.html#app.api_add_to_wishlist">[docs]</a>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/wishlist/add&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">api_add_to_wishlist</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    API to add a product to the user&#39;s wishlist.</span>
+
+<span class="sd">    Request JSON:</span>
+<span class="sd">    - product_id (int): ID of the product to add.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON object with success message or error details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="n">product_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;product_id&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">product_id</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Product ID is required&quot;</span><span class="p">}),</span> <span class="mi">400</span>
+
+    <span class="n">add_to_wishlist</span><span class="p">(</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">product_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Product added to wishlist successfully.&quot;</span><span class="p">}),</span> <span class="mi">201</span></div>
+
+
+<div class="viewcode-block" id="api_remove_from_wishlist">
+<a class="viewcode-back" href="../app.html#app.api_remove_from_wishlist">[docs]</a>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/wishlist/remove&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">api_remove_from_wishlist</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    API to remove a product from the user&#39;s wishlist.</span>
+
+<span class="sd">    Request JSON:</span>
+<span class="sd">    - product_id (int): ID of the product to remove.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON object with success message or error details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="n">product_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;product_id&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">product_id</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Product ID is required&quot;</span><span class="p">}),</span> <span class="mi">400</span>
+
+    <span class="n">remove_from_wishlist</span><span class="p">(</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">product_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Product removed from wishlist successfully.&quot;</span><span class="p">}),</span> <span class="mi">200</span></div>
+
+
+<div class="viewcode-block" id="api_get_wishlist">
+<a class="viewcode-back" href="../app.html#app.api_get_wishlist">[docs]</a>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/wishlist&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">api_get_wishlist</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    API to fetch all products in the user&#39;s wishlist.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Response: JSON object with the wishlist items or a message if the wishlist is empty.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">wishlist</span> <span class="o">=</span> <span class="n">get_wishlist</span><span class="p">(</span><span class="n">current_user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">wishlist</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Wishlist is empty.&quot;</span><span class="p">}),</span> <span class="mi">200</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;wishlist&quot;</span><span class="p">:</span> <span class="n">wishlist</span><span class="p">}),</span> <span class="mi">200</span></div>
+
 
 <span class="c1"># Run the application</span>
+<span class="kn">import</span> <span class="nn">cProfile</span>
+<span class="kn">import</span> <span class="nn">pstats</span>
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
+    <span class="n">profiler</span> <span class="o">=</span> <span class="n">cProfile</span><span class="o">.</span><span class="n">Profile</span><span class="p">()</span>
+    <span class="n">profiler</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">profiler</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;profile_results.prof&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">stats</span> <span class="o">=</span> <span class="n">pstats</span><span class="o">.</span><span class="n">Stats</span><span class="p">(</span><span class="n">profiler</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">stats</span><span class="o">.</span><span class="n">sort_stats</span><span class="p">(</span><span class="s1">&#39;cumulative&#39;</span><span class="p">)</span>
+            <span class="n">stats</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Profile data saved to profile_results.prof&quot;</span><span class="p">)</span>
+
 </pre></div>
 
           </div>
@@ -456,6 +912,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../inventory_db.html">inventory_db</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../sales_db.html">sales_db</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reviews_db.html">reviews_db</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../wishlist_db.html">sales_db</a></li>
 </ul>
 
 <div class="relations">

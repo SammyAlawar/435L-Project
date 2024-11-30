@@ -138,6 +138,23 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.get_customer_wallet">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">get_customer_wallet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#get_customer_wallet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.get_customer_wallet" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves the wallet balance of a customer by their username.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The unique username of the customer.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The wallet balance of the customer, or None if the customer is not found.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="Customers.customers_db.register_customer">
 <span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">register_customer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">customer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#register_customer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.register_customer" title="Link to this definition">¶</a></dt>
 <dd><p>Registers a new customer in the Customers table.</p>
@@ -530,6 +547,58 @@ retrieving product details, and ensuring data consistency.</p>
 <p>save_purchase_history(“john_doe”, “Laptop”, 1, 1500.0)</p>
 </dd></dl>
 
+<dl class="py function" id="module-Wishlist.wishlist_db">
+<dt class="sig sig-object py" id="Wishlist.wishlist_db.add_to_wishlist">
+<span class="sig-prename descclassname"><span class="pre">Wishlist.wishlist_db.</span></span><span class="sig-name descname"><span class="pre">add_to_wishlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">customer_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">product_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Wishlist/wishlist_db.html#add_to_wishlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Wishlist.wishlist_db.add_to_wishlist" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a product to a customer’s wishlist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>customer_id</strong> (<em>int</em>) – The ID of the customer.</p></li>
+<li><p><strong>product_id</strong> (<em>int</em>) – The ID of the product.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Wishlist.wishlist_db.create_wishlist_table">
+<span class="sig-prename descclassname"><span class="pre">Wishlist.wishlist_db.</span></span><span class="sig-name descname"><span class="pre">create_wishlist_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Wishlist/wishlist_db.html#create_wishlist_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Wishlist.wishlist_db.create_wishlist_table" title="Link to this definition">¶</a></dt>
+<dd><p>Creates the Wishlist table in the SQLite database if it doesn’t exist.</p>
+<p>The Wishlist table tracks products added to a customer’s wishlist.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Wishlist.wishlist_db.get_wishlist">
+<span class="sig-prename descclassname"><span class="pre">Wishlist.wishlist_db.</span></span><span class="sig-name descname"><span class="pre">get_wishlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">customer_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Wishlist/wishlist_db.html#get_wishlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Wishlist.wishlist_db.get_wishlist" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves all products in a customer’s wishlist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>customer_id</strong> (<em>int</em>) – The ID of the customer.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of wishlist items, including product details and the date added.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of tuples</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="Wishlist.wishlist_db.remove_from_wishlist">
+<span class="sig-prename descclassname"><span class="pre">Wishlist.wishlist_db.</span></span><span class="sig-name descname"><span class="pre">remove_from_wishlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">customer_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">product_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Wishlist/wishlist_db.html#remove_from_wishlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Wishlist.wishlist_db.remove_from_wishlist" title="Link to this definition">¶</a></dt>
+<dd><p>Removes a product from a customer’s wishlist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>customer_id</strong> (<em>int</em>) – The ID of the customer.</p></li>
+<li><p><strong>product_id</strong> (<em>int</em>) – The ID of the product.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
@@ -555,6 +624,7 @@ retrieving product details, and ensuring data consistency.</p>
 <li class="toctree-l1"><a class="reference internal" href="inventory_db.html">inventory_db</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sales_db.html">sales_db</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reviews_db.html">reviews_db</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wishlist_db.html">sales_db</a></li>
 </ul>
 
 <div class="relations">

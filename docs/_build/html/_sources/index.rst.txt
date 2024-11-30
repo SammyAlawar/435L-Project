@@ -45,6 +45,14 @@ Services
      - Get Customer Reviews
      - Moderate Reviews
      - Get Review Details
+   
+5. **Wishlist Management (wishlist_db.py)**:
+   - Allows customers to manage their product wishlists.
+   - Key APIs:
+     - Create Wishlist Table
+     - Add to Wishlist
+     - Remove from Wishlist
+     - Get Wishlist Items
 
 Modules
 -------
@@ -59,6 +67,7 @@ The following modules provide the core functionalities of the application:
    inventory_db
    sales_db
    reviews_db
+   wishlist_db
 
 How to Contribute
 -----------------

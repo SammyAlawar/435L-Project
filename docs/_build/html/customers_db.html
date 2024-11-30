@@ -138,6 +138,23 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="Customers.customers_db.get_customer_wallet">
+<span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">get_customer_wallet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#get_customer_wallet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.get_customer_wallet" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves the wallet balance of a customer by their username.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>username</strong> (<em>str</em>) – The unique username of the customer.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The wallet balance of the customer, or None if the customer is not found.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="Customers.customers_db.register_customer">
 <span class="sig-prename descclassname"><span class="pre">Customers.customers_db.</span></span><span class="sig-name descname"><span class="pre">register_customer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">customer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Customers/customers_db.html#register_customer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#Customers.customers_db.register_customer" title="Link to this definition">¶</a></dt>
 <dd><p>Registers a new customer in the Customers table.</p>
@@ -204,6 +221,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#Customers.customers_db.delete_customer"><code class="docutils literal notranslate"><span class="pre">delete_customer()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Customers.customers_db.get_all_customers"><code class="docutils literal notranslate"><span class="pre">get_all_customers()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Customers.customers_db.get_customer_by_username"><code class="docutils literal notranslate"><span class="pre">get_customer_by_username()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Customers.customers_db.get_customer_wallet"><code class="docutils literal notranslate"><span class="pre">get_customer_wallet()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Customers.customers_db.register_customer"><code class="docutils literal notranslate"><span class="pre">register_customer()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#Customers.customers_db.update_customer"><code class="docutils literal notranslate"><span class="pre">update_customer()</span></code></a></li>
 </ul>
@@ -211,6 +229,7 @@
 <li class="toctree-l1"><a class="reference internal" href="inventory_db.html">inventory_db</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sales_db.html">sales_db</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reviews_db.html">reviews_db</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wishlist_db.html">sales_db</a></li>
 </ul>
 
 <div class="relations">

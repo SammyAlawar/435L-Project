@@ -40,7 +40,7 @@
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
 <div class="viewcode-block" id="connect_to_db">
-<a class="viewcode-back" href="../../modules.html#Reviews.reviews_db.connect_to_db">[docs]</a>
+<a class="viewcode-back" href="../../reviews_db.html#Reviews.reviews_db.connect_to_db">[docs]</a>
 <span class="k">def</span> <span class="nf">connect_to_db</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Connect to the SQLite database.</span>
@@ -52,7 +52,7 @@
 
 
 <div class="viewcode-block" id="create_reviews_table">
-<a class="viewcode-back" href="../../modules.html#Reviews.reviews_db.create_reviews_table">[docs]</a>
+<a class="viewcode-back" href="../../reviews_db.html#Reviews.reviews_db.create_reviews_table">[docs]</a>
 <span class="k">def</span> <span class="nf">create_reviews_table</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create the Reviews table if it does not exist.</span>
@@ -81,7 +81,7 @@
 
 
 <div class="viewcode-block" id="validate_review_input">
-<a class="viewcode-back" href="../../modules.html#Reviews.reviews_db.validate_review_input">[docs]</a>
+<a class="viewcode-back" href="../../reviews_db.html#Reviews.reviews_db.validate_review_input">[docs]</a>
 <span class="k">def</span> <span class="nf">validate_review_input</span><span class="p">(</span><span class="n">rating</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Validate the rating value.</span>
@@ -97,7 +97,7 @@
 
 
 <div class="viewcode-block" id="submit_review">
-<a class="viewcode-back" href="../../modules.html#Reviews.reviews_db.submit_review">[docs]</a>
+<a class="viewcode-back" href="../../reviews_db.html#Reviews.reviews_db.submit_review">[docs]</a>
 <span class="k">def</span> <span class="nf">submit_review</span><span class="p">(</span><span class="n">product_name</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">rating</span><span class="p">,</span> <span class="n">comment</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Submit a new review for a product.</span>
@@ -130,7 +130,7 @@
 
 
 <div class="viewcode-block" id="update_review">
-<a class="viewcode-back" href="../../modules.html#Reviews.reviews_db.update_review">[docs]</a>
+<a class="viewcode-back" href="../../reviews_db.html#Reviews.reviews_db.update_review">[docs]</a>
 <span class="k">def</span> <span class="nf">update_review</span><span class="p">(</span><span class="n">review_id</span><span class="p">,</span> <span class="n">rating</span><span class="p">,</span> <span class="n">comment</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Update an existing review.</span>
@@ -161,7 +161,7 @@
 
 
 <div class="viewcode-block" id="delete_review">
-<a class="viewcode-back" href="../../modules.html#Reviews.reviews_db.delete_review">[docs]</a>
+<a class="viewcode-back" href="../../reviews_db.html#Reviews.reviews_db.delete_review">[docs]</a>
 <span class="k">def</span> <span class="nf">delete_review</span><span class="p">(</span><span class="n">review_id</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Delete a review by ID.</span>
@@ -187,7 +187,7 @@
 
 
 <div class="viewcode-block" id="get_product_reviews">
-<a class="viewcode-back" href="../../modules.html#Reviews.reviews_db.get_product_reviews">[docs]</a>
+<a class="viewcode-back" href="../../reviews_db.html#Reviews.reviews_db.get_product_reviews">[docs]</a>
 <span class="k">def</span> <span class="nf">get_product_reviews</span><span class="p">(</span><span class="n">product_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get all reviews for a specific product.</span>
@@ -213,7 +213,7 @@
 
 
 <div class="viewcode-block" id="get_customer_reviews">
-<a class="viewcode-back" href="../../modules.html#Reviews.reviews_db.get_customer_reviews">[docs]</a>
+<a class="viewcode-back" href="../../reviews_db.html#Reviews.reviews_db.get_customer_reviews">[docs]</a>
 <span class="k">def</span> <span class="nf">get_customer_reviews</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get all reviews submitted by a specific customer.</span>
@@ -239,7 +239,7 @@
 
 
 <div class="viewcode-block" id="moderate_review">
-<a class="viewcode-back" href="../../modules.html#Reviews.reviews_db.moderate_review">[docs]</a>
+<a class="viewcode-back" href="../../reviews_db.html#Reviews.reviews_db.moderate_review">[docs]</a>
 <span class="k">def</span> <span class="nf">moderate_review</span><span class="p">(</span><span class="n">review_id</span><span class="p">,</span> <span class="n">moderated</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Moderate a review by updating its status.</span>
@@ -266,7 +266,7 @@
 
 
 <div class="viewcode-block" id="get_review_details">
-<a class="viewcode-back" href="../../modules.html#Reviews.reviews_db.get_review_details">[docs]</a>
+<a class="viewcode-back" href="../../reviews_db.html#Reviews.reviews_db.get_review_details">[docs]</a>
 <span class="k">def</span> <span class="nf">get_review_details</span><span class="p">(</span><span class="n">review_id</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the details of a specific review.</span>
@@ -316,6 +316,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../inventory_db.html">inventory_db</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../sales_db.html">sales_db</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reviews_db.html">reviews_db</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../wishlist_db.html">sales_db</a></li>
 </ul>
 
 <div class="relations">
